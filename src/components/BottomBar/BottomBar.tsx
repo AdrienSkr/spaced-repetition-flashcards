@@ -4,46 +4,72 @@ import ProgressIcon from '../../assets/progress.svg'
 import { Page } from '../../main'
 
 type Props = {
+  currentPage: Page
   setCurrentPage: (page: Page) => void
 }
 
-export function BottomBar({ setCurrentPage }: Props) {
-  const handleClick = (page: Page) => () => {
-    setCurrentPage(page)
+type NavItemProps = {
+  icon: string
+  label: string
+  page: Page
+  isActive: boolean
+  onClick: (page: Page) => void
+}
+
+function NavItem({ icon, label, page, isActive, onClick }: NavItemProps) {
+  const handleClick = () => {
+    onClick(page)
   }
 
-  const NavItem = ({
-    icon,
-    label,
-    page,
-  }: {
-    icon: string
-    label: string
-    page: Page
-  }) => (
+  return (
     <div
-      className="group flex cursor-pointer flex-col items-center"
-      onClick={handleClick(page)}
+      className={`nav-item group ${isActive ? 'nav-item-active' : ''}`}
+      onClick={handleClick}
     >
-      <div className="mb-1 size-10 rounded-full p-2 transition-all duration-200 group-hover:bg-blue-200 group-hover:shadow-md group-active:bg-blue-400 group-active:shadow-inner">
+      <div className={`nav-icon ${isActive ? 'nav-icon-active' : ''}`}>
         <img
           src={icon}
           alt={label}
           className="size-full transition-all duration-200 group-hover:scale-110"
         />
       </div>
-      <span className="text-xs font-light transition-all duration-200 group-hover:font-normal group-hover:text-blue-900">
+      <span className={`text-xs transition-all duration-200 ${
+        isActive 
+          ? 'font-medium text-primary-700' 
+          : 'font-light group-hover:font-normal group-hover:text-primary-600'
+      }`}>
         {label}
       </span>
     </div>
   )
+}
+
+export function BottomBar({ currentPage, setCurrentPage }: Props) {
 
   return (
-    <div className="fixed inset-x-0 bottom-0 flex h-20 w-full items-center justify-center bg-blue-300 shadow-lg transition-colors">
+    <div className="glass fixed inset-x-0 bottom-0 z-40 flex h-20 w-full items-center justify-center border-t border-primary-100 bg-white/80 shadow-lg">
       <div className="flex space-x-16">
-        <NavItem icon={LearnIcon} label="Learning" page="learning" />
-        <NavItem icon={CollectionIcon} label="Collection" page="collection" />
-        <NavItem icon={ProgressIcon} label="Progress" page="progress" />
+        <NavItem 
+          icon={LearnIcon} 
+          label="Learning" 
+          page="learning" 
+          isActive={currentPage === 'learning'}
+          onClick={setCurrentPage}
+        />
+        <NavItem 
+          icon={CollectionIcon} 
+          label="Collection" 
+          page="collection" 
+          isActive={currentPage === 'collection'}
+          onClick={setCurrentPage}
+        />
+        <NavItem 
+          icon={ProgressIcon} 
+          label="Progress" 
+          page="progress" 
+          isActive={currentPage === 'progress'}
+          onClick={setCurrentPage}
+        />
       </div>
     </div>
   )
