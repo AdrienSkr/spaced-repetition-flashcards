@@ -1,7 +1,9 @@
 import { db } from './db'
+import { getDefaultSM2Data } from '../utils/sm2'
+import { devLog } from '../utils/devMode'
 
 export async function populate() {
-  console.log('Debut de la fonction populate')
+  devLog.log('Debut de la fonction populate')
 
   // vérifier si la bd possède deja une liste
   const nbLists = await db.lists.count()
@@ -14,7 +16,7 @@ export async function populate() {
   } else {
     // on doit créer une liste
     listId = await db.lists.add({
-      title: 'Default',
+      title: 'Test0',
     })
   }
   const listId2 = await db.lists.add({
@@ -26,7 +28,7 @@ export async function populate() {
   }
 
   // Ajout manuel de données
-  await db.cards.bulkAdd([
+  const cardsData = [
     {
       question: "Who is the protagonist of the anime 'Naruto'?",
       answer: 'Naruto Uzumaki',
@@ -573,9 +575,17 @@ export async function populate() {
       answer: 'Natsu Dragneel',
       listId: listId2,
     },
-  ])
+  ]
 
-  console.log('Data populated')
+  // Ajouter les propriétés SM-2 à chaque carte
+  const cardsWithSM2 = cardsData.map(card => ({
+    ...card,
+    ...getDefaultSM2Data(),
+  }))
+
+  await db.cards.bulkAdd(cardsWithSM2)
+
+  devLog.log('Data populated')
 }
 
 /*

@@ -1,6 +1,7 @@
 import { render } from 'preact'
 import { useState } from 'preact/hooks'
 import { BottomBar } from './components/BottomBar/BottomBar'
+import { DevToolbarWrapper } from './components/Dev/DevToolbarWrapper'
 import { Edition } from './components/Edition/Edition'
 import { CollectionProvider } from './components/Page/Collection/CollectionContext'
 import { CollectionPage } from './components/Page/Collection/CollectionPage'
@@ -27,22 +28,29 @@ function App() {
         return <Edition />
     }
   }
+
   return (
     <LearningProvider>
       <CollectionProvider>
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-col bg-surface-bg">
           <TopBar currentPage={currentPage} />
-          <main className="flex grow flex-col items-center justify-center bg-blue-500 pb-20">
-            <div className="w-full max-w-[95vw] p-6">{renderPage()}</div>
+          <main className="flex grow flex-col items-center justify-start px-4 py-6 pb-24">
+            <div className="w-full max-w-5xl">{renderPage()}</div>
           </main>
-          <BottomBar setCurrentPage={setCurrentPage} />
+          <BottomBar
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+          {/* DevToolbarWrapper utilise un import conditionnel */}
+          {/* Vite éliminera le code mort en production grâce au remplacement de import.meta.env.DEV par false */}
+          {/* Rollup effectuera le dead code elimination sur tout le code du DevToolbar */}
+          <DevToolbarWrapper />
         </div>
       </CollectionProvider>
     </LearningProvider>
   )
 }
 
-// Ensure that the 'app' element exists before trying to render
 const appContainer = document.getElementById('root')
 if (appContainer) {
   render(<App />, appContainer)

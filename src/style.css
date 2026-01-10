@@ -1,3 +1,312 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary colors - Violet/Indigo theme */
+    --color-primary-50: #f5f3ff;
+    --color-primary-100: #ede9fe;
+    --color-primary-200: #ddd6fe;
+    --color-primary-300: #c4b5fd;
+    --color-primary-400: #a78bfa;
+    --color-primary-500: #8b5cf6;
+    --color-primary-600: #7c3aed;
+    --color-primary-700: #6d28d9;
+    --color-primary-800: #5b21b6;
+    --color-primary-900: #4c1d95;
+
+    /* Surface colors */
+    --color-surface-bg: #faf5ff;
+    --color-surface-card: #ffffff;
+    --color-surface-elevated: #ffffff;
+    --color-surface-muted: #f3f4f6;
+
+    /* Status colors */
+    --color-success: #22c55e;
+    --color-success-light: #dcfce7;
+    --color-error: #ef4444;
+    --color-error-light: #fee2e2;
+    --color-warning: #f59e0b;
+    --color-warning-light: #fef3c7;
+    --color-info: #3b82f6;
+    --color-info-light: #dbeafe;
+
+    /* Mastery level colors */
+    --color-mastery-new: #e5e7eb;
+    --color-mastery-learning: #fbbf24;
+    --color-mastery-review: #60a5fa;
+    --color-mastery-mastered: #34d399;
+
+    /* Shadows */
+    --shadow-soft: 0 4px 6px rgba(139, 92, 246, 0.1);
+    --shadow-glow: 0 10px 25px rgba(139, 92, 246, 0.15);
+  }
+
+  body {
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-surface-bg) 100%);
+  }
+}
+
+@layer components {
+
+  /* Button variants */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-200 ease-out;
+    background-color: var(--color-primary-500);
+    color: white;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-600);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .btn-primary:active {
+    background-color: var(--color-primary-700);
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-200 ease-out;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-primary-200);
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 ease-out;
+    color: var(--color-primary-600);
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--color-primary-50);
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border-2 bg-white text-gray-900 placeholder:text-gray-400 transition-all duration-200 outline-none;
+    border-color: var(--color-primary-200);
+  }
+
+  .input:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  }
+
+  /* Nav item */
+  .nav-item {
+    @apply flex flex-col items-center cursor-pointer transition-all duration-200;
+  }
+
+  .nav-item-active {
+    color: var(--color-primary-700);
+  }
+
+  .nav-icon {
+    @apply size-10 p-2 rounded-full transition-all duration-200;
+  }
+
+  .nav-icon:hover {
+    background-color: var(--color-primary-100);
+  }
+
+  .nav-icon-active {
+    background-color: var(--color-primary-200);
+    box-shadow: var(--shadow-soft);
+  }
+}
+
+@layer utilities {
+
+  /* Surface backgrounds */
+  .bg-surface-bg {
+    background-color: var(--color-surface-bg);
+  }
+
+  .bg-surface-card {
+    background-color: var(--color-surface-card);
+  }
+
+  /* Status colors */
+  .bg-success {
+    background-color: var(--color-success);
+  }
+
+  .bg-success-light {
+    background-color: var(--color-success-light);
+  }
+
+  .text-success {
+    color: var(--color-success);
+  }
+
+  .border-success {
+    border-color: var(--color-success);
+  }
+
+  .bg-error {
+    background-color: var(--color-error);
+  }
+
+  .bg-error-light {
+    background-color: var(--color-error-light);
+  }
+
+  .text-error {
+    color: var(--color-error);
+  }
+
+  .border-error {
+    border-color: var(--color-error);
+  }
+
+  .bg-warning-light {
+    background-color: var(--color-warning-light);
+  }
+
+  /* Mastery level colors */
+  .bg-mastery-new {
+    background-color: var(--color-mastery-new);
+  }
+
+  .bg-mastery-learning {
+    background-color: var(--color-mastery-learning);
+  }
+
+  .bg-mastery-review {
+    background-color: var(--color-mastery-review);
+  }
+
+  .bg-mastery-mastered {
+    background-color: var(--color-mastery-mastered);
+  }
+
+  .text-mastery-learning {
+    color: var(--color-mastery-learning);
+  }
+
+  .text-mastery-review {
+    color: var(--color-mastery-review);
+  }
+
+  /* Shadows */
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Glass effect */
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-gradient-to-r from-violet-500 to-purple-700 bg-clip-text text-transparent;
+  }
+
+  /* Answer feedback animations */
+  .answer-correct {
+    animation: pulseSuccess 0.6s ease-out;
+    border-color: var(--color-success);
+  }
+
+  .answer-incorrect {
+    animation: shake 0.5s ease-in-out;
+    border-color: var(--color-error);
+  }
+
+  @keyframes pulseSuccess {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+
+    70% {
+      box-shadow: 0 0 0 20px rgba(34, 197, 94, 0);
+    }
+
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+
+  @keyframes shake {
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translateX(-4px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translateX(4px);
+    }
+  }
+
+  /* Swipe card animations */
+  @keyframes swipeLeft {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(-150%) rotate(-20deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes swipeRight {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(150%) rotate(20deg);
+      opacity: 0;
+    }
+  }
+
+  .animate-swipe-left {
+    animation: swipeLeft 0.3s ease-out forwards;
+  }
+
+  .animate-swipe-right {
+    animation: swipeRight 0.3s ease-out forwards;
+  }
+
+  /* 3D flip utilities */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
