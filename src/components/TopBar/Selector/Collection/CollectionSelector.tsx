@@ -8,16 +8,21 @@ import { List } from '../../../../models/List'
 import { db } from '../../../../models/db'
 
 const CollectionSelector: FunctionComponent = () => {
-  const { selectedList, setSelectedList, lists, setLists } = useCollectionContext()
+  const { selectedList, setSelectedList, lists, setLists } =
+    useCollectionContext()
   const [showCreateListModal, setShowCreateListModal] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [settingsList, setSettingsList] = useState<List | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(undefined)
+  const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(
+    undefined,
+  )
   const isMountedRef = useRef(true)
-  const selectorIdRef = useRef(`collection-selector-${Math.random().toString(36).slice(2, 11)}`)
+  const selectorIdRef = useRef(
+    `collection-selector-${Math.random().toString(36).slice(2, 11)}`,
+  )
 
   // Track if component is mounted to prevent state updates after unmount
   useEffect(() => {
@@ -58,7 +63,11 @@ const CollectionSelector: FunctionComponent = () => {
     if (!dropdownElement) return
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (isMountedRef.current && dropdownElement && !dropdownElement.contains(event.target as Node)) {
+      if (
+        isMountedRef.current &&
+        dropdownElement &&
+        !dropdownElement.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false)
       }
     }
@@ -82,11 +91,14 @@ const CollectionSelector: FunctionComponent = () => {
     }
   }, [isDropdownOpen])
 
-  const handleListSelect = useCallback((list: List | { id: 0; title: 'all cards' }) => {
-    if (!isMountedRef.current) return
-    setSelectedList(list)
-    setIsDropdownOpen(false)
-  }, [setSelectedList])
+  const handleListSelect = useCallback(
+    (list: List | { id: 0; title: 'all cards' }) => {
+      if (!isMountedRef.current) return
+      setSelectedList(list)
+      setIsDropdownOpen(false)
+    },
+    [setSelectedList],
+  )
 
   const handleSettingsClick = useCallback((e: Event, list: List) => {
     e.stopPropagation()
@@ -105,33 +117,44 @@ const CollectionSelector: FunctionComponent = () => {
     setIsDropdownOpen(false)
   }, [])
 
-  const handleCreateListSuccess = useCallback(async (listId: number) => {
-    if (!isMountedRef.current) return
-    // Fetch the newly created list from database
-    const newList = await db.lists.get(listId)
-    if (newList && isMountedRef.current) {
-      // Update lists array and select the new list
-      setLists([...lists, newList])
-      setSelectedList(newList)
-    }
-    setShowCreateListModal(false)
-  }, [lists, setLists, setSelectedList])
+  const handleCreateListSuccess = useCallback(
+    async (listId: number) => {
+      if (!isMountedRef.current) return
+      // Fetch the newly created list from database
+      const newList = await db.lists.get(listId)
+      if (newList && isMountedRef.current) {
+        // Update lists array and select the new list
+        setLists([...lists, newList])
+        setSelectedList(newList)
+      }
+      setShowCreateListModal(false)
+    },
+    [lists, setLists, setSelectedList],
+  )
 
-  const handleSettingsSuccess = useCallback((updatedList: List) => {
-    if (!isMountedRef.current) return
-    // Update lists array with the modified list
-    setLists(lists.map(l => l.id === updatedList.id ? updatedList : l))
-    setSelectedList(updatedList)
-    setShowSettingsModal(false)
-    setSettingsList(null)
-  }, [lists, setLists, setSelectedList])
+  const handleSettingsSuccess = useCallback(
+    (updatedList: List) => {
+      if (!isMountedRef.current) return
+      // Update lists array with the modified list
+      setLists(lists.map((l) => (l.id === updatedList.id ? updatedList : l)))
+      setSelectedList(updatedList)
+      setShowSettingsModal(false)
+      setSettingsList(null)
+    },
+    [lists, setLists, setSelectedList],
+  )
 
   // Get current selected list for display
   const currentListTitle = selectedList?.title || 'all cards'
 
   return (
     <>
-      <div class="relative" ref={dropdownRef} id={selectorIdRef.current} data-selector="collection">
+      <div
+        class="relative"
+        ref={dropdownRef}
+        id={selectorIdRef.current}
+        data-selector="collection"
+      >
         {/* Dropdown Button */}
         <button
           ref={buttonRef}
@@ -147,18 +170,25 @@ const CollectionSelector: FunctionComponent = () => {
         >
           <span class="truncate">{currentListTitle}</span>
           <svg
-            class={`size-4 shrink-0 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+            class={`size-4 shrink-0 transition-transform duration-200 ${
+              isDropdownOpen ? 'rotate-180' : ''
+            }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div 
+          <div
             data-dropdown-menu="collection"
             class="absolute left-0 top-full z-[100] mt-2 min-w-[200px] rounded-xl border-2 border-primary-200 bg-white shadow-xl"
             style={{ width: dropdownWidth ? `${dropdownWidth}px` : '100%' }}
@@ -167,16 +197,16 @@ const CollectionSelector: FunctionComponent = () => {
             <button
               onClick={() => handleListSelect({ id: 0, title: 'all cards' })}
               class={`w-full px-4 py-2 text-left font-medium transition-colors hover:bg-primary-50 ${
-                selectedList?.id === 0 ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+                selectedList?.id === 0
+                  ? 'bg-primary-100 text-primary-700'
+                  : 'text-gray-700'
               }`}
             >
               All Cards
             </button>
 
             {/* Divider */}
-            {lists.length > 0 && (
-              <div class="border-t border-primary-100" />
-            )}
+            {lists.length > 0 && <div class="border-t border-primary-100" />}
 
             {/* List of decks */}
             <div class="max-h-60 overflow-y-auto">
@@ -198,7 +228,12 @@ const CollectionSelector: FunctionComponent = () => {
                     class="ml-2 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-primary-600"
                     title="Deck Settings"
                   >
-                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      class="size-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -227,8 +262,18 @@ const CollectionSelector: FunctionComponent = () => {
               onClick={handleCreateListClick}
               class="flex w-full items-center justify-center gap-2 px-4 py-3 text-primary-600 transition-colors hover:bg-primary-50"
             >
-              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <svg
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               <span class="font-medium">Create New Deck</span>
             </button>

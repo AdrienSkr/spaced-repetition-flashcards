@@ -1,32 +1,29 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect } from 'preact/hooks'
 import { db } from '../../../models/db'
+import { useListSelector } from '../../../contexts/ListSelectorContext'
 import { CardsView } from './CardsView'
-import { useCollectionContext } from './CollectionContext'
 
 export function CollectionPage() {
   const lists = useLiveQuery(() => db.lists.toArray())
-
-  const { selectedList, setLists, setSelectedList } = useCollectionContext()
+  const { selectedListId, setLists } = useListSelector()
 
   useEffect(() => {
     if (lists) {
       setLists(lists)
-      if (!selectedList && lists.length > 0) {
-        setSelectedList(lists[0])
-      }
     }
-  }, [lists, setLists, setSelectedList, selectedList])
+  }, [lists, setLists])
 
   if (!lists) return null
 
+  // Use selectedListId: 0 = All Cards, otherwise use the selected list
+  const listToShow = selectedListId === 0
+    ? { id: 0, title: 'all' }
+    : lists.find(l => l.id === selectedListId) || { id: 0, title: 'all' }
+
   return (
     <div>
-      {selectedList ? (
-        <CardsView list={selectedList} />
-      ) : (
-        lists.length > 0 && <CardsView list={{ id: 0, title: 'all' }} />
-      )}
+      <CardsView list={listToShow} />
     </div>
   )
 }

@@ -243,6 +243,12 @@ function getFillInQuality(data: ModeAnswerData): number {
 /**
  * Get the mastery level based on repetitions and interval
  * Used for visual indicators and progress tracking
+ * 
+ * Mastery levels explained:
+ * - 'new': Card has never been reviewed (repetitions = 0, interval = 0)
+ * - 'learning': Card is being consolidated (1-2 correct answers in a row)
+ * - 'review': Card is in active review cycle (3+ correct answers, interval < 21 days)
+ * - 'mastered': Card is well-known (interval >= 21 days)
  */
 export type MasteryLevel = 'new' | 'learning' | 'review' | 'mastered'
 
@@ -256,6 +262,33 @@ export function getMasteryLevel(repetitions: number, interval: number): MasteryL
     } else {
         return 'mastered'
     }
+}
+
+/**
+ * Get human-readable label for mastery level
+ * These labels are clearer than the technical keys
+ */
+export function getMasteryLabel(level: MasteryLevel): string {
+    const labels: Record<MasteryLevel, string> = {
+        new: 'New',
+        learning: 'Consolidating',
+        review: 'Reviewing',
+        mastered: 'Mastered',
+    }
+    return labels[level]
+}
+
+/**
+ * Get description explaining what each mastery level means
+ */
+export function getMasteryDescription(level: MasteryLevel): string {
+    const descriptions: Record<MasteryLevel, string> = {
+        new: 'Never reviewed yet',
+        learning: '1-2 correct answers, building memory',
+        review: '3+ correct answers, strengthening recall',
+        mastered: 'Well-known, long intervals between reviews',
+    }
+    return descriptions[level]
 }
 
 /**

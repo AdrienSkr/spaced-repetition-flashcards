@@ -9,16 +9,21 @@ import { List } from '../../../../models/List'
 import { db } from '../../../../models/db'
 
 const LearningSelector: FunctionComponent = () => {
-  const { selectedList, setSelectedList, lists, setLists } = useLearningContext()
+  const { selectedList, setSelectedList, lists, setLists } =
+    useLearningContext()
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showCreateListModal, setShowCreateListModal] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [settingsList, setSettingsList] = useState<List | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(undefined)
+  const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(
+    undefined,
+  )
   const isMountedRef = useRef(true)
-  const selectorIdRef = useRef(`learning-selector-${Math.random().toString(36).slice(2, 11)}`)
+  const selectorIdRef = useRef(
+    `learning-selector-${Math.random().toString(36).slice(2, 11)}`,
+  )
 
   // Track if component is mounted to prevent state updates after unmount
   useEffect(() => {
@@ -52,7 +57,11 @@ const LearningSelector: FunctionComponent = () => {
     if (!dropdownElement) return
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (isMountedRef.current && dropdownElement && !dropdownElement.contains(event.target as Node)) {
+      if (
+        isMountedRef.current &&
+        dropdownElement &&
+        !dropdownElement.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false)
       }
     }
@@ -76,11 +85,14 @@ const LearningSelector: FunctionComponent = () => {
     }
   }, [isDropdownOpen])
 
-  const handleListSelect = useCallback((list: List) => {
-    if (!isMountedRef.current) return
-    setSelectedList(list)
-    setIsDropdownOpen(false)
-  }, [setSelectedList])
+  const handleListSelect = useCallback(
+    (list: List) => {
+      if (!isMountedRef.current) return
+      setSelectedList(list)
+      setIsDropdownOpen(false)
+    },
+    [setSelectedList],
+  )
 
   const handleSettingsClick = useCallback((e: Event, list: List) => {
     e.stopPropagation()
@@ -91,14 +103,17 @@ const LearningSelector: FunctionComponent = () => {
     setIsDropdownOpen(false)
   }, [])
 
-  const handleSettingsSuccess = useCallback((updatedList: List) => {
-    if (!isMountedRef.current) return
-    // Update lists array with the modified list
-    setLists(lists.map(l => l.id === updatedList.id ? updatedList : l))
-    setSelectedList(updatedList)
-    setShowSettingsModal(false)
-    setSettingsList(null)
-  }, [lists, setLists, setSelectedList])
+  const handleSettingsSuccess = useCallback(
+    (updatedList: List) => {
+      if (!isMountedRef.current) return
+      // Update lists array with the modified list
+      setLists(lists.map((l) => (l.id === updatedList.id ? updatedList : l)))
+      setSelectedList(updatedList)
+      setShowSettingsModal(false)
+      setSettingsList(null)
+    },
+    [lists, setLists, setSelectedList],
+  )
 
   const handleCreateListClick = useCallback((e: Event) => {
     e.stopPropagation()
@@ -108,24 +123,37 @@ const LearningSelector: FunctionComponent = () => {
     setIsDropdownOpen(false)
   }, [])
 
-  const handleCreateListSuccess = useCallback(async (listId: number) => {
-    if (!isMountedRef.current) return
-    // Fetch the newly created list from database
-    const newList = await db.lists.get(listId)
-    if (newList && isMountedRef.current) {
-      // Update lists array and select the new list
-      setLists([...lists, newList])
-      setSelectedList(newList)
-    }
-    setShowCreateListModal(false)
-  }, [lists, setLists, setSelectedList])
+  const handleCreateListSuccess = useCallback(
+    async (listId: number) => {
+      if (!isMountedRef.current) return
+      // Fetch the newly created list from database
+      const newList = await db.lists.get(listId)
+      if (newList && isMountedRef.current) {
+        // Update lists array and select the new list
+        setLists([...lists, newList])
+        setSelectedList(newList)
+      }
+      setShowCreateListModal(false)
+    },
+    [lists, setLists, setSelectedList],
+  )
 
   // Get current selected list for display (fallback to first list if none selected)
-  const currentList = selectedList?.id !== undefined ? selectedList : (lists.length > 0 ? lists[0] : null)
+  const currentList =
+    selectedList?.id !== undefined
+      ? selectedList
+      : lists.length > 0
+      ? lists[0]
+      : null
 
   return (
     <>
-      <div class="relative" ref={dropdownRef} id={selectorIdRef.current} data-selector="learning">
+      <div
+        class="relative"
+        ref={dropdownRef}
+        id={selectorIdRef.current}
+        data-selector="learning"
+      >
         {/* Dropdown Button */}
         <button
           ref={buttonRef}
@@ -141,18 +169,25 @@ const LearningSelector: FunctionComponent = () => {
         >
           <span class="truncate">{currentList?.title || 'Select a deck'}</span>
           <svg
-            class={`size-4 shrink-0 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+            class={`size-4 shrink-0 transition-transform duration-200 ${
+              isDropdownOpen ? 'rotate-180' : ''
+            }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div 
+          <div
             data-dropdown-menu="learning"
             class="absolute left-0 top-full z-[100] mt-2 min-w-[200px] rounded-xl border-2 border-primary-200 bg-white shadow-xl"
             style={{ width: dropdownWidth ? `${dropdownWidth}px` : '100%' }}
@@ -177,7 +212,12 @@ const LearningSelector: FunctionComponent = () => {
                     class="ml-2 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-primary-600"
                     title="Deck Settings"
                   >
-                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      class="size-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -197,17 +237,25 @@ const LearningSelector: FunctionComponent = () => {
             </div>
 
             {/* Divider */}
-            {lists.length > 0 && (
-              <div class="border-t border-primary-100" />
-            )}
+            {lists.length > 0 && <div class="border-t border-primary-100" />}
 
             {/* Create New Deck Button */}
             <button
               onClick={handleCreateListClick}
               class="flex w-full items-center justify-center gap-2 px-4 py-3 text-primary-600 transition-colors hover:bg-primary-50"
             >
-              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <svg
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               <span class="font-medium">Create New Deck</span>
             </button>
@@ -254,4 +302,3 @@ const LearningSelector: FunctionComponent = () => {
 }
 
 export default LearningSelector
-

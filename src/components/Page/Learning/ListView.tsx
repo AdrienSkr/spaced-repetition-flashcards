@@ -12,14 +12,23 @@ import {
 } from '../../../utils/sm2'
 import { CardContainer } from './Card/CardContainer'
 import { useLearningContext } from './LearningContext'
+import { Icon } from '../../shared/Icon'
 
-export function ListView({ list }: { list: List }) {
+interface ListViewProps {
+  list: List
+  onAddCard?: () => void
+}
+
+export function ListView({ list, onAddCard }: ListViewProps) {
   const { learningMode } = useLearningContext()
   const [startTime, setStartTime] = useState<number>(Date.now())
 
   // Fetch cards that are due for review
   const cards = useLiveQuery(async () => {
-    const allCards = await db.cards.where({ listId: list.id }).toArray()
+    // If list.id === 0, fetch all cards, otherwise filter by listId
+    const allCards = list.id === 0
+      ? await db.cards.toArray()
+      : await db.cards.where({ listId: list.id }).toArray()
 
     // Sort by: due cards first, then by nextReview date
     return allCards.sort((a, b) => {
@@ -85,23 +94,63 @@ export function ListView({ list }: { list: List }) {
 
   if (!cards) {
     return (
-      <div class="flex items-center justify-center min-h-[60vh]">
+      <div class="flex min-h-[60vh] items-center justify-center">
         <div class="animate-pulse text-primary-500">Loading...</div>
       </div>
     )
   }
 
+  // Empty deck state - no cards at all
+  if (cards.length === 0) {
+    return (
+      <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
+        <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-primary-100">
+          <Icon name="empty-box" size={48} color="#8b5cf6" />
+        </div>
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">
+          This deck is empty
+        </h2>
+        <p class="mb-6 max-w-md text-gray-600">
+          Add some cards to start learning. You can create flashcards with
+          questions and answers.
+        </p>
+        {onAddCard && (
+          <button
+            onClick={onAddCard}
+            class="btn-primary flex items-center gap-2"
+          >
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Add Your First Card
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  // All cards reviewed - deck has cards but none are due
   if (dueCards.length === 0) {
     return (
-      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in">
-        <div class="w-24 h-24 rounded-full bg-success-light flex items-center justify-center mb-6">
-          <span class="text-5xl">🎉</span>
+      <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
+        <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-success-light">
+          <Icon name="celebration" size={48} color="#22c55e" />
         </div>
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">All caught up!</h2>
-        <p class="text-gray-600 max-w-md">
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">All caught up!</h2>
+        <p class="max-w-md text-gray-600">
           You've reviewed all cards due for today. Great job!
           {cards.length > 0 && (
-            <span class="block mt-2 text-sm text-primary-600">
+            <span class="mt-2 block text-sm text-primary-600">
               Next review: {getNextReviewText(cards)}
             </span>
           )}

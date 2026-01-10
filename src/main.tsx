@@ -2,8 +2,7 @@ import { render } from 'preact'
 import { useState } from 'preact/hooks'
 import { BottomBar } from './components/BottomBar/BottomBar'
 import { DevToolbarWrapper } from './components/Dev/DevToolbarWrapper'
-import { Edition } from './components/Edition/Edition'
-import { CollectionProvider } from './components/Page/Collection/CollectionContext'
+import { ListSelectorProvider } from './contexts/ListSelectorContext'
 import { CollectionPage } from './components/Page/Collection/CollectionPage'
 import { LearningProvider } from './components/Page/Learning/LearningContext'
 import { LearningPage } from './components/Page/Learning/LearningPage'
@@ -11,7 +10,7 @@ import { ProgressPage } from './components/Page/Progress/ProgressPage'
 import { TopBar } from './components/TopBar/TopBar'
 import './style.css'
 
-export type Page = 'learning' | 'collection' | 'progress' | 'edition'
+export type Page = 'learning' | 'collection' | 'progress'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('learning')
@@ -24,17 +23,15 @@ function App() {
         return <CollectionPage />
       case 'progress':
         return <ProgressPage />
-      case 'edition':
-        return <Edition />
     }
   }
 
   return (
-    <LearningProvider>
-      <CollectionProvider>
+    <ListSelectorProvider>
+      <LearningProvider>
         <div className="flex min-h-screen flex-col bg-surface-bg">
           <TopBar currentPage={currentPage} />
-          <main className="flex grow flex-col items-center justify-start px-4 py-6 pb-24">
+          <main className="flex grow flex-col items-center justify-center px-4 pt-14 pb-24">
             <div className="w-full max-w-5xl">{renderPage()}</div>
           </main>
           <BottomBar
@@ -46,8 +43,8 @@ function App() {
           {/* Rollup effectuera le dead code elimination sur tout le code du DevToolbar */}
           <DevToolbarWrapper />
         </div>
-      </CollectionProvider>
-    </LearningProvider>
+      </LearningProvider>
+    </ListSelectorProvider>
   )
 }
 
