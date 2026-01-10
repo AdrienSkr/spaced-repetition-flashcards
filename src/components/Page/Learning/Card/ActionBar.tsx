@@ -1,74 +1,121 @@
-import AddIcon from '../../assets/add.svg'
-import EditIcon from '../../assets/edit.svg'
-import FillingIcon from '../../assets/filling.svg'
-import SwippingIcon from '../../assets/swipping.svg'
-import TypingIcon from '../../assets/typing.svg'
+import AddIcon from '../../../../assets/add.svg'
+import EditIcon from '../../../../assets/edit.svg'
+import FillingIcon from '../../../../assets/filling.svg'
+import SwippingIcon from '../../../../assets/swipping.svg'
+import TypingIcon from '../../../../assets/typing.svg'
+import { Card } from '../../../../models/Card'
+import { useLearningContext } from '../LearningContext'
 
-export const ActionBar = () => {
-  const handleEdit = () => {}
+interface ActionBarProps {
+  card?: Card
+  listId?: number
+  onAddCard?: () => void
+  onEditCard?: (card: Card) => void
+}
+
+export const ActionBar = ({ card, listId, onAddCard, onEditCard }: ActionBarProps) => {
+  const { learningMode, setLearningMode } = useLearningContext()
+
+  const handleEdit = () => {
+    if (card && onEditCard) {
+      onEditCard(card)
+    }
+  }
+
+  const handleAdd = () => {
+    if (onAddCard) {
+      onAddCard()
+    }
+  }
+
+  const ActionButton = ({ 
+    icon, 
+    label, 
+    onClick,
+    disabled = false,
+    isActive = false
+  }: { 
+    icon: string
+    label: string
+    onClick?: () => void
+    disabled?: boolean
+    isActive?: boolean
+  }) => (
+    <div
+      class={`group relative flex size-7 items-center justify-center rounded-lg p-1.5 
+             transition-all duration-200 
+             ${disabled 
+               ? 'cursor-not-allowed opacity-40' 
+               : isActive
+                 ? 'cursor-pointer bg-primary-200 shadow-sm ring-2 ring-primary-400'
+                 : 'cursor-pointer hover:bg-primary-100 hover:shadow-sm active:bg-primary-200 active:shadow-inner'
+             }`}
+      onClick={disabled ? undefined : onClick}
+    >
+      <img
+        src={icon}
+        alt={`${label} icon`}
+        class={`size-full transition-transform duration-200 ${!disabled && 'group-hover:scale-110'}`}
+      />
+      <span class="pointer-events-none absolute -bottom-8 left-1/2 z-10 
+                   -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-2 py-1 
+                   text-xs text-white opacity-0 
+                   transition-opacity duration-200 group-hover:opacity-100">
+        {label}
+      </span>
+    </div>
+  )
 
   return (
     <div
       id="bar"
-      class="absolute left-1/2 top-3 flex h-10 max-w-md -translate-x-1/2 items-center justify-between space-x-8 rounded-full bg-blue-50 px-6 shadow-md"
+      class="absolute left-1/2 top-4 flex h-11 -translate-x-1/2 
+             items-center justify-between gap-6 
+             rounded-full border border-primary-100 
+             bg-primary-50 px-5 shadow-sm"
     >
-      <div class="flex space-x-2.5">
-        <div class="group relative flex size-6 items-center rounded-full p-1 transition-all duration-200 hover:bg-blue-200 hover:shadow-md active:bg-blue-300 active:shadow-inner">
-          <img
-            src={TypingIcon}
-            alt="typing icon"
-            class="size-full transition-all duration-200 group-hover:scale-110"
-          />
-          <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-            Typing
-          </span>
-        </div>
-        <div class="group relative flex size-6 items-center rounded-full p-1 transition-all duration-200 hover:bg-blue-200 hover:shadow-md active:bg-blue-300 active:shadow-inner">
-          <img
-            src={SwippingIcon}
-            alt="swipping icon"
-            class="size-full transition-all duration-200 group-hover:scale-110"
-          />
-          <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-            Swipping
-          </span>
-        </div>
-        <div class="group relative flex size-6 items-center rounded-full p-1 transition-all duration-200 hover:bg-blue-200 hover:shadow-md active:bg-blue-300 active:shadow-inner">
-          <img
-            src={FillingIcon}
-            alt="filling icon"
-            class="size-full transition-all duration-200 group-hover:scale-110"
-          />
-          <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-            Filling
-          </span>
-        </div>
+      {/* Learning Mode Buttons */}
+      <div class="flex items-center gap-2">
+        <ActionButton 
+          icon={TypingIcon} 
+          label="Typing" 
+          onClick={() => setLearningMode('typing')}
+          isActive={learningMode === 'typing'}
+        />
+        <ActionButton 
+          icon={SwippingIcon} 
+          label="Swipe" 
+          onClick={() => setLearningMode('swipe')}
+          isActive={learningMode === 'swipe'}
+        />
+        <ActionButton 
+          icon={FillingIcon} 
+          label="Fill-in" 
+          onClick={() => setLearningMode('fillIn')}
+          isActive={learningMode === 'fillIn'}
+        />
       </div>
-      <div class="flex space-x-2.5">
-        <div
-          class="group relative flex size-[1.35rem] items-center rounded-full p-1 transition-all duration-200 hover:bg-blue-200 hover:shadow-md active:bg-blue-300 active:shadow-inner"
+
+      {/* Divider */}
+      <div class="h-5 w-px bg-primary-200" />
+
+      {/* Edit Actions */}
+      <div class="flex items-center gap-2">
+        <ActionButton 
+          icon={EditIcon} 
+          label="Edit" 
           onClick={handleEdit}
-        >
-          <img
-            src={EditIcon}
-            alt="edit icon"
-            class="size-full transition-all duration-200 group-hover:scale-110"
-          />
-          <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-            Edit
-          </span>
-        </div>
-        <div class="group relative flex size-[1.35rem] items-center rounded-full p-1 transition-all duration-200 hover:bg-blue-200 hover:shadow-md active:bg-blue-300 active:shadow-inner">
-          <img
-            src={AddIcon}
-            alt="add icon"
-            class="size-full transition-all duration-200 group-hover:scale-110"
-          />
-          <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-            Add
-          </span>
-        </div>
+          disabled={!card}
+        />
+        <ActionButton 
+          icon={AddIcon} 
+          label="Add" 
+          onClick={handleAdd}
+          disabled={!listId}
+        />
       </div>
     </div>
   )
 }
+
+
