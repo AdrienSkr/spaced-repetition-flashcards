@@ -1,26 +1,50 @@
 import { JSX } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import { Card as CardType } from '../../../../models/Card'
+import { getMasteryLevel, ModeAnswerData } from '../../../../utils/sm2'
+import { isAnswerCorrect } from '../../../../utils/levenshtein'
+import { Modal } from '../../../shared/Modal'
+import { AddCardModalContent } from '../../../Modals/AddCardModal'
+import { EditCardModalContent } from '../../../Modals/EditCardModal'
 import { ActionBar } from './ActionBar'
+import { useLearningContext } from '../LearningContext'
 
 interface Props {
   card: CardType
-  onAnswer: (card: CardType, isCorrect: boolean) => void
+  listId: number
+  onAnswer: (card: CardType, answerData: ModeAnswerData) => void
+  onCardUpdated?: () => void
 }
 
-export function Card({ card, onAnswer }: Props) {
-  // enregistrer la carte dans un useState
-  const [cardState, setCardState] = useState<CardType>(card)
-  console.log('cardState:', setCardState)
-
+export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
+  const { selectedList } = useLearningContext()
   const [input, setInput] = useState<string>('')
   const [isAnswered, setIsAnswered] = useState<boolean>(false)
   const [isCorrect, setIsCorrect] = useState<boolean>(false)
+  const [animationClass, setAnimationClass] = useState<string>('')
+  const startTimeRef = useRef<number>(Date.now())
+  
+  // Modal states
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [cardToEdit, setCardToEdit] = useState<CardType | null>(null)
+
+  // Get tolerance level from deck settings
+  const toleranceLevel = selectedList?.toleranceLevel || 'exact'
+
+  // Get mastery level for visual indicator
+  const masteryLevel = getMasteryLevel(card.repetitions || 0, card.interval || 0)
+  const masteryColors = {
+    new: 'bg-mastery-new',
+    learning: 'bg-mastery-learning',
+    review: 'bg-mastery-review',
+    mastered: 'bg-mastery-mastered',
+  }
 
   useEffect(() => {
+    // Focus appropriate element
     if (isAnswered) {
       const element = document.getElementById('card')
-      // Programmez l'appel de l'événement focus intentionnellement
       if (element) element.focus()
     } else {
       const element = document.getElementById('input')
@@ -28,27 +52,48 @@ export function Card({ card, onAnswer }: Props) {
     }
   }, [isAnswered])
 
+  // Reset state when card changes
+  useEffect(() => {
+    setInput('')
+    setIsAnswered(false)
+    setIsCorrect(false)
+    setAnimationClass('')
+    startTimeRef.current = Date.now() // Reset timer for new card
+  }, [card.id])
+
   const handleKeyDown = (
     event: JSX.TargetedKeyboardEvent<HTMLInputElement>,
   ) => {
-    if (event.key === 'Enter') {
-      const correct = input.toLowerCase() === cardState.answer.toLowerCase()
+    if (event.key === 'Enter' && input.trim()) {
+      // Use tolerance-based validation from deck settings
+      const correct = isAnswerCorrect(input, card.answer, toleranceLevel)
       setIsAnswered(true)
       setIsCorrect(correct)
+      setAnimationClass(correct ? 'answer-correct' : 'answer-incorrect')
     }
   }
 
   const changeCard = () => {
-    setIsAnswered(false)
-    setInput('')
-    onAnswer(card, isCorrect)
+    const responseTimeMs = Date.now() - startTimeRef.current
+    onAnswer(card, {
+      isCorrect,
+      responseTimeMs
+    })
   }
 
   const onKeyDownCard = (event: JSX.TargetedKeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
-      console.log('Enter')
       changeCard()
     }
+  }
+
+  const handleAddCard = () => {
+    setShowAddModal(true)
+  }
+
+  const handleEditCard = (cardToEdit: CardType) => {
+    setCardToEdit(cardToEdit)
+    setShowEditModal(true)
   }
 
   return (
@@ -58,32 +103,120 @@ export function Card({ card, onAnswer }: Props) {
         onClick={isAnswered ? changeCard : undefined}
         onKeyDown={isAnswered ? onKeyDownCard : undefined}
         tabIndex={0}
-        class="relative mx-auto flex max-h-full min-h-[70vh] w-full max-w-4xl items-center justify-center rounded-3xl bg-blue-100 p-16 text-3xl font-bold text-blue-50 shadow-md transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 active:scale-95 active:bg-blue-200"
+        class={`
+          relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
+          rounded-3xl bg-surface-card p-12 shadow-glow 
+          transition-all duration-300 
+          hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-400 
+          ${isAnswered ? 'cursor-pointer active:scale-[0.99]' : ''}
+          ${animationClass}
+        `}
       >
-        <ActionBar />
+        {/* Mastery indicator */}
+        <div class="absolute left-4 top-4">
+          <div class={`size-3 rounded-full ${masteryColors[masteryLevel]}`} 
+               title={`Mastery: ${masteryLevel}`} />
+        </div>
+
+        {/* Mode indicator */}
+        <div class="absolute right-4 top-4 text-xs uppercase tracking-wide text-primary-500">
+          Typing
+        </div>
+
+        <ActionBar 
+          card={card}
+          listId={listId}
+          onAddCard={handleAddCard}
+          onEditCard={handleEditCard}
+        />
+        
         {isAnswered ? (
-          isCorrect ? (
-            <h4 class="text-3xl text-green-700">{input}</h4>
-          ) : (
-            <div class="flex flex-col items-center space-y-6">
-              <h3 class="text-blue-900">{cardState.answer}</h3>
-              <h4 class="text-red-700">{input}</h4>
-            </div>
-          )
+          <div class="flex animate-fade-in flex-col items-center gap-6">
+            {isCorrect ? (
+              <>
+                <div class="mb-2 flex size-16 items-center justify-center rounded-full bg-success-light">
+                  <svg class="size-10 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h4 class="text-3xl font-bold text-success">{input}</h4>
+              </>
+            ) : (
+              <>
+                <div class="mb-2 flex size-16 items-center justify-center rounded-full bg-error-light">
+                  <svg class="size-10 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <div class="text-center">
+                  <p class="mb-1 text-sm text-gray-500">Correct answer:</p>
+                  <h3 class="mb-4 text-2xl font-bold text-gray-900">{card.answer}</h3>
+                  <p class="text-lg text-error line-through">{input}</p>
+                </div>
+              </>
+            )}
+            <p class="mt-4 text-sm text-gray-400">
+              Press <kbd class="rounded bg-gray-100 px-2 py-1 text-xs">Enter</kbd> or click to continue
+            </p>
+          </div>
         ) : (
-          <div class="flex max-h-full flex-col items-center  gap-16">
-            <h3 class="text-center text-blue-900">{cardState.question}</h3>
+          <div class="flex w-full max-w-lg flex-col items-center gap-10">
+            <h3 class="text-center text-2xl font-bold leading-relaxed text-gray-900 md:text-3xl">
+              {card.question}
+            </h3>
             <input
               id="input"
-              class="rounded-md border-2 border-blue-500 bg-blue-100 px-5 py-0.5 text-blue-900 shadow-md transition-all duration-200 hover:bg-blue-50 hover:shadow-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="input text-center text-lg"
               type="text"
               value={input}
+              placeholder="Type your answer..."
               onInput={(e) => setInput(e.currentTarget.value)}
               onKeyDown={handleKeyDown}
             />
           </div>
         )}
       </div>
+
+      {/* Add Card Modal */}
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Card"
+        size="lg"
+      >
+        <AddCardModalContent
+          listId={listId}
+          onSuccess={() => {
+            setShowAddModal(false)
+            onCardUpdated?.()
+          }}
+          onCancel={() => setShowAddModal(false)}
+        />
+      </Modal>
+
+      {/* Edit Card Modal */}
+      <Modal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title="Edit Card"
+        size="lg"
+      >
+        {cardToEdit && (
+          <EditCardModalContent
+            card={cardToEdit}
+            onSuccess={() => {
+              setShowEditModal(false)
+              setCardToEdit(null)
+              onCardUpdated?.()
+            }}
+            onCancel={() => {
+              setShowEditModal(false)
+              setCardToEdit(null)
+            }}
+          />
+        )}
+      </Modal>
     </>
   )
 }
+
