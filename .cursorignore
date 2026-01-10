@@ -1,0 +1,39 @@
+# Dépendances
+node_modules/
+
+# Build et fichiers générés
+dist/
+dist-ssr/
+*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Fichiers de lock (peuvent être volumineux)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Cache
+.cache/
+.vite/
+.eslintcache
+*.tsbuildinfo
+
+# Fichiers temporaires et éditeurs
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Fichiers de déploiement
+.vercel/
+.netlify/
