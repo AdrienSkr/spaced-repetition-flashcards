@@ -94,15 +94,15 @@ export function isAnswerCorrect(
 /**
  * Get human-readable description of tolerance level
  */
-export function getToleranceDescription(level: 'exact' | 'tolerant80' | 'tolerant60'): string {
+export function getToleranceDescription(level: 'exact' | 'tolerant80' | 'tolerant60'): { label: string; description: string } {
     switch (level) {
         case 'exact':
-            return '100% - Exact match required'
+            return { label: '100%', description: 'Exact match required' }
         case 'tolerant80':
-            return '80% - Minor typos allowed'
+            return { label: '80%', description: 'Minor typos allowed' }
         case 'tolerant60':
-            return '60% - Very lenient (vocabulary)'
+            return { label: '60%', description: 'Very lenient (vocabulary)' }
         default:
-            return 'Unknown'
+            return { label: 'Unknown', description: '' }
     }
 }
