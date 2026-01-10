@@ -3,72 +3,144 @@ import { useState } from 'preact/hooks'
 import { Card as CardType } from '../../../models/Card'
 import { db } from '../../../models/db'
 import { List } from '../../../models/List'
-import { Card } from './Card/Card'
+import {
+  calculateSM2,
+  getQualityForMode,
+  getNextReviewText as getNextReviewTextFromSM2,
+  isDue,
+  ModeAnswerData,
+} from '../../../utils/sm2'
+import { CardContainer } from './Card/CardContainer'
+import { useLearningContext } from './LearningContext'
 
 export function ListView({ list }: { list: List }) {
-  console.log('list:', list, 'list.id:', list.id)
+  const { learningMode } = useLearningContext()
+  const [startTime, setStartTime] = useState<number>(Date.now())
 
-  const [allCards, setAllCards] = useState<CardType[]>([])
-  const [pendingCards, setPendingCards] = useState<CardType[]>([])
-  const [correctCards, setCorrectCards] = useState<CardType[]>([])
+  // Fetch cards that are due for review
+  const cards = useLiveQuery(async () => {
+    const allCards = await db.cards.where({ listId: list.id }).toArray()
 
-  useLiveQuery(async () => {
-    const cardsQuery = await db.cards.where({ listId: list.id }).toArray()
-    setAllCards(cardsQuery)
-    console.log('allCards useLiveQuery :', allCards)
+    // Sort by: due cards first, then by nextReview date
+    return allCards.sort((a, b) => {
+      const aDue = isDue(a.nextReview || 0)
+      const bDue = isDue(b.nextReview || 0)
 
-    const pendingCardsQuery = cardsQuery.filter(
-      (card) => card.delay === undefined || card.delay === 0,
-    )
-    setPendingCards(pendingCardsQuery)
-    console.log('pendingCards useLiveQuery :', pendingCards)
+      if (aDue && !bDue) return -1
+      if (!aDue && bDue) return 1
 
-    const correctCardsQuery = cardsQuery.filter(
-      (card) => card.delay !== undefined && card.delay !== 0,
-    )
-    setCorrectCards(correctCardsQuery)
-    console.log('allCards useLiveQuery :', correctCards)
+      // Both due or both not due - sort by nextReview
+      return (a.nextReview || 0) - (b.nextReview || 0)
+    })
   }, [list.id])
 
-  function onAnswer(card: CardType, isCorrect: boolean) {
-    /* Todo: a tester */
-    if (isCorrect) {
-      // on retire la question de la liste des questions à poser
-      {
-        if (card.count) {
-          card.count++
-        } else {
-          card.count = 1
-        }
-      }
-      card.delay = Math.pow(2, card.count)
-    } else {
-      // on remet la question à la fin de la liste car elle n'est pas correcte
-      card.delay = 0
-      if (card.count !== undefined) {
-        card.count -= 3
-        if (card.count < 0) {
-          card.count = 0
-        }
-      } else {
-        card.count = 0
-      }
+  // Filter to get only due cards
+  const dueCards = cards?.filter((card) => isDue(card.nextReview || 0)) || []
+  const currentCard = dueCards[0]
+
+  // Reset timer when card changes
+  const handleCardShow = () => {
+    setStartTime(Date.now())
+  }
+
+  async function onAnswer(card: CardType, answerData: ModeAnswerData) {
+    // Add response time for typing mode if not already provided
+    const dataWithTime: ModeAnswerData = {
+      ...answerData,
+      responseTimeMs: answerData.responseTimeMs ?? Date.now() - startTime,
     }
 
+    // Calculate quality based on the current learning mode
+    const quality = getQualityForMode(learningMode, dataWithTime)
+
+    // Calculate new SM-2 values
+    const result = calculateSM2(
+      quality,
+      card.repetitions || 0,
+      card.easinessFactor || 2.5,
+      card.interval || 0,
+    )
+
+    // Update card in database
     if (card.id) {
-      db.cards.update(card.id, card)
+      await db.cards.update(card.id, {
+        repetitions: result.repetitions,
+        easinessFactor: result.easinessFactor,
+        interval: result.interval,
+        nextReview: result.nextReview,
+        lastReviewed: Date.now(),
+        totalReviews: (card.totalReviews || 0) + 1,
+        correctStreak: dataWithTime.isCorrect
+          ? (card.correctStreak || 0) + 1
+          : 0,
+        // Keep legacy fields updated for compatibility
+        delay: result.interval,
+        count: result.repetitions,
+      })
     }
+
+    // Reset timer for next card
+    handleCardShow()
+  }
+
+  if (!cards) {
+    return (
+      <div class="flex items-center justify-center min-h-[60vh]">
+        <div class="animate-pulse text-primary-500">Loading...</div>
+      </div>
+    )
+  }
+
+  if (dueCards.length === 0) {
+    return (
+      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in">
+        <div class="w-24 h-24 rounded-full bg-success-light flex items-center justify-center mb-6">
+          <span class="text-5xl">🎉</span>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">All caught up!</h2>
+        <p class="text-gray-600 max-w-md">
+          You've reviewed all cards due for today. Great job!
+          {cards.length > 0 && (
+            <span class="block mt-2 text-sm text-primary-600">
+              Next review: {getNextReviewText(cards)}
+            </span>
+          )}
+        </p>
+      </div>
+    )
   }
 
   return (
-    <>
-      {pendingCards.length > 0 ? (
-        <Card card={pendingCards[0]} onAnswer={onAnswer} />
-      ) : (
-        <div class="flex h-full items-center justify-center text-blue-50">
-          <h2 class="text-2xl">No more cards to review</h2>
-        </div>
+    <div class="animate-fade-in">
+      {/* Progress indicator */}
+      <div class="mb-4 flex items-center justify-center gap-4 text-sm text-gray-500">
+        <span>
+          {dueCards.length} card{dueCards.length > 1 ? 's' : ''} remaining
+        </span>
+      </div>
+
+      {currentCard && (
+        <CardContainer
+          card={currentCard}
+          listId={list.id!}
+          onAnswer={onAnswer}
+        />
       )}
-    </>
+    </div>
   )
+}
+
+function getNextReviewText(cards: CardType[]): string {
+  const futureCards = cards.filter(
+    (c) => c.nextReview && c.nextReview > Date.now(),
+  )
+  if (futureCards.length === 0) return 'No upcoming reviews'
+
+  const nextCard = futureCards.sort(
+    (a, b) => (a.nextReview || 0) - (b.nextReview || 0),
+  )[0]
+  const nextReviewTime = nextCard.nextReview || 0
+
+  // Use the SM2 utility function to format the timestamp
+  return getNextReviewTextFromSM2(nextReviewTime)
 }
