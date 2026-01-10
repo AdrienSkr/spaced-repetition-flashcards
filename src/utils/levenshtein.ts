@@ -45,10 +45,13 @@ export function levenshteinDistance(a: string, b: string): number {
  * 1 = identical, 0 = completely different
  */
 export function getSimilarityScore(a: string, b: string): number {
-    if (a === b) return 1
+    const aLower = a.toLowerCase()
+    const bLower = b.toLowerCase()
+    
+    if (aLower === bLower) return 1
     if (a.length === 0 || b.length === 0) return 0
 
-    const distance = levenshteinDistance(a.toLowerCase(), b.toLowerCase())
+    const distance = levenshteinDistance(aLower, bLower)
     const maxLength = Math.max(a.length, b.length)
 
     return 1 - (distance / maxLength)
@@ -102,7 +105,5 @@ export function getToleranceDescription(level: 'exact' | 'tolerant80' | 'toleran
             return { label: '80%', description: 'Minor typos allowed' }
         case 'tolerant60':
             return { label: '60%', description: 'Very lenient (vocabulary)' }
-        default:
-            return { label: 'Unknown', description: '' }
     }
 }
