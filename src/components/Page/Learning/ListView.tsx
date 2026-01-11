@@ -32,9 +32,10 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   // Fetch cards that are due for review
   const cards = useLiveQuery(async () => {
     // If list.id === 0, fetch all cards, otherwise filter by listId
-    const allCards = list.id === 0
-      ? await db.cards.toArray()
-      : await db.cards.where({ listId: list.id }).toArray()
+    const allCards =
+      list.id === 0
+        ? await db.cards.toArray()
+        : await db.cards.where({ listId: list.id }).toArray()
 
     // Sort by: due cards first, then by nextReview date
     return allCards.sort((a, b) => {
@@ -51,13 +52,17 @@ export function ListView({ list, onAddCard }: ListViewProps) {
 
   // Filter to get only due cards
   const dueCards = cards?.filter((card) => isDue(card.nextReview || 0)) || []
-  
+
   // Filter retry cards (cards in retryQueue that are not already in dueCards)
-  const dueCardIds = new Set(dueCards.map((card) => card.id).filter((id): id is number => !!id))
-  const retryCards = cards?.filter(
-    (card) => card.id && retryQueue.includes(card.id) && !dueCardIds.has(card.id)
-  ) || []
-  
+  const dueCardIds = new Set(
+    dueCards.map((card) => card.id).filter((id): id is number => !!id),
+  )
+  const retryCards =
+    cards?.filter(
+      (card) =>
+        card.id && retryQueue.includes(card.id) && !dueCardIds.has(card.id),
+    ) || []
+
   // Select current card: prioritize due cards, then retry cards
   const currentCard = dueCards[0] || retryCards[0]
 
