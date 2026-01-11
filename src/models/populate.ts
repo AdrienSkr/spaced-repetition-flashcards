@@ -23,7 +23,11 @@ export async function populate() {
     title: 'Test',
   })
 
-  if (listId === undefined || listId2 === undefined) {
+  const listId3 = await db.lists.add({
+    title: 'Transformers & Attention Mechanisms',
+  })
+
+  if (listId === undefined || listId2 === undefined || listId3 === undefined) {
     throw new Error("La liste n'a pas pu être créée ou récupérée.")
   }
 
@@ -574,6 +578,27 @@ export async function populate() {
       question: "Who is the main character in 'Fairy Tail'?",
       answer: 'Natsu Dragneel',
       listId: listId2,
+    },
+    // AI Transformers cards
+    {
+      question: 'What is the primary innovation of the Transformer architecture introduced in the "Attention is All You Need" paper?',
+      answer: 'The replacement of recurrent layers with self-attention mechanisms, allowing for parallel processing of sequences and better handling of long-range dependencies.',
+      listId: listId3,
+    },
+    {
+      question: 'In the multi-head attention mechanism, what is the purpose of using multiple attention heads instead of a single attention function?',
+      answer: 'Multiple heads allow the model to jointly attend to information from different representation subspaces at different positions, capturing diverse aspects of relationships between tokens.',
+      listId: listId3,
+    },
+    {
+      question: 'What are the three main components computed in the scaled dot-product attention mechanism, and what role does each play?',
+      answer: 'Query (Q), Key (K), and Value (V). Queries and Keys are used to compute attention weights (similarity scores), and these weights are applied to Values to produce the weighted output.',
+      listId: listId3,
+    },
+    {
+      question: 'Why is the attention score divided by the square root of the dimension (√d_k) in scaled dot-product attention?',
+      answer: 'To prevent the dot products from growing too large in magnitude, which would push the softmax function into regions with extremely small gradients, making training difficult.',
+      listId: listId3,
     },
   ]
 
