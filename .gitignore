@@ -25,3 +25,23 @@ dist-ssr
 
 coverage/
 .cursor/
+.vite/deps/_metadata.json
+.vite/deps/chunk-5WRI5ZAA.js
+.vite/deps/chunk-5WRI5ZAA.js.map
+.vite/deps/chunk-EFT6J6GF.js
+.vite/deps/chunk-EFT6J6GF.js.map
+.vite/deps/chunk-OJEGDWL3.js
+.vite/deps/chunk-OJEGDWL3.js.map
+.vite/deps/chunk-UVV3GQ6G.js
+.vite/deps/chunk-UVV3GQ6G.js.map
+.vite/deps/dexie-react-hooks.js
+.vite/deps/dexie-react-hooks.js.map
+.vite/deps/dexie.js
+.vite/deps/dexie.js.map
+.vite/deps/package.json
+.vite/deps/preact_compat.js
+.vite/deps/preact_compat.js.map
+.vite/deps/preact_hooks.js
+.vite/deps/preact_hooks.js.map
+.vite/deps/preact.js
+.vite/deps/preact.js.map
