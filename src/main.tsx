@@ -40,7 +40,9 @@ function App() {
           <TopBar currentPage={currentPage} />
           <main
             id="main-content"
-            className="flex grow flex-col items-center justify-center px-4 pb-24 pt-14"
+            className={`flex grow flex-col items-center px-4 pb-24 pt-14 ${
+              currentPage === 'learning' ? 'justify-center' : 'justify-start'
+            }`}
             tabIndex={-1}
           >
             <div className="w-full max-w-5xl">{renderPage()}</div>
