@@ -18,6 +18,13 @@ export default [
       'no-constant-binary-expression': 'error',
     },
   },
+  {
+    settings: {
+      tailwindcss: {
+        config: './tailwind.config.js',
+      },
+    },
+  },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,

@@ -228,7 +228,7 @@ export function ImportCardsModalContent({
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
       >
-        <div class="mx-auto mb-3 icon-container-md rounded-lg bg-brand-100">
+        <div class="icon-container-md mx-auto mb-3 rounded-lg bg-brand-100">
           <Icon name="import" size={24} color="#0ea5e9" />
         </div>
         <p class="text-sm text-neutral-600">

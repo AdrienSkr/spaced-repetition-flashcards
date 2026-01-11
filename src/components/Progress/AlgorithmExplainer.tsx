@@ -31,7 +31,7 @@ export function AlgorithmExplainer() {
                 name="check"
                 size={18}
                 color="#22c55e"
-                class="mt-0.5 flex-shrink-0"
+                class="mt-0.5 shrink-0"
               />
               <span>
                 <strong>Correct answers</strong> increase the interval
@@ -43,7 +43,7 @@ export function AlgorithmExplainer() {
                 name="cross"
                 size={18}
                 color="#ef4444"
-                class="mt-0.5 flex-shrink-0"
+                class="mt-0.5 shrink-0"
               />
               <span>
                 <strong>Wrong answers</strong> reset the card to be reviewed
@@ -55,7 +55,7 @@ export function AlgorithmExplainer() {
                 name="lightning"
                 size={18}
                 color="#0ea5e9"
-                class="mt-0.5 flex-shrink-0"
+                class="mt-0.5 shrink-0"
               />
               <span>
                 <strong>Response speed</strong> fine-tunes difficulty rating

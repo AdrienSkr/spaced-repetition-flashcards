@@ -92,7 +92,7 @@ export function CardsView({ list }: Props) {
   if (cards.length === 0) {
     return (
       <div class="flex flex-col items-center justify-center py-12 text-center">
-        <div class="mb-4 icon-container-md rounded-lg bg-brand-100">
+        <div class="icon-container-md mb-4 rounded-lg bg-brand-100">
           <Icon name="empty-box" size={32} color="#0ea5e9" />
         </div>
         <p class="text-neutral-500">No cards in this deck yet</p>
@@ -160,7 +160,7 @@ export function CardsView({ list }: Props) {
             onClick={() => setActiveTab(tab.id)}
             class={`rounded-md px-3 py-2 text-sm font-medium transition-all duration-fast ${
               activeTab === tab.id
-                ? `${tab.bgColor} ${tab.color} ring-2 ring-offset-1 ring-brand-300`
+                ? `${tab.bgColor} ${tab.color} ring-2 ring-brand-300 ring-offset-1`
                 : 'bg-neutral-50 text-neutral-500 hover:bg-neutral-100'
             }`}
           >

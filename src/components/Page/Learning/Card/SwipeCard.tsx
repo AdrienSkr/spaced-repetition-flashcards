@@ -88,7 +88,7 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
             <p class="text-sm text-neutral-400">Cliquez pour voir la réponse</p>
           </div>
         ) : (
-          <div class="flex w-full flex-col items-center gap-8 animate-fade-in">
+          <div class="flex w-full animate-fade-in flex-col items-center gap-8">
             <p class="text-center text-sm text-neutral-500">{card.question}</p>
             <h3 class="text-center text-xl font-semibold leading-relaxed text-brand-600 md:text-2xl">
               {card.answer}

@@ -15,13 +15,19 @@ const LearningSelector: FunctionComponent = () => {
   const [settingsList, setSettingsList] = useState<List | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(undefined)
+  const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(
+    undefined,
+  )
   const isMountedRef = useRef(true)
-  const selectorIdRef = useRef(`learning-selector-${Math.random().toString(36).slice(2, 11)}`)
+  const selectorIdRef = useRef(
+    `learning-selector-${Math.random().toString(36).slice(2, 11)}`,
+  )
 
   useEffect(() => {
     isMountedRef.current = true
-    return () => { isMountedRef.current = false }
+    return () => {
+      isMountedRef.current = false
+    }
   }, [])
 
   useEffect(() => {
@@ -42,7 +48,11 @@ const LearningSelector: FunctionComponent = () => {
     if (!dropdownElement) return
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (isMountedRef.current && dropdownElement && !dropdownElement.contains(event.target as Node)) {
+      if (
+        isMountedRef.current &&
+        dropdownElement &&
+        !dropdownElement.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false)
       }
     }
@@ -65,11 +75,14 @@ const LearningSelector: FunctionComponent = () => {
     }
   }, [isDropdownOpen])
 
-  const handleListSelect = useCallback((list: List) => {
-    if (!isMountedRef.current) return
-    setSelectedListId(list.id!)
-    setIsDropdownOpen(false)
-  }, [setSelectedListId])
+  const handleListSelect = useCallback(
+    (list: List) => {
+      if (!isMountedRef.current) return
+      setSelectedListId(list.id!)
+      setIsDropdownOpen(false)
+    },
+    [setSelectedListId],
+  )
 
   const handleSettingsClick = useCallback((e: Event, list: List) => {
     e.stopPropagation()
@@ -80,13 +93,18 @@ const LearningSelector: FunctionComponent = () => {
     setIsDropdownOpen(false)
   }, [])
 
-  const handleSettingsSuccess = useCallback((updatedList: List) => {
-    if (!isMountedRef.current) return
-    setLists(lists.map((l: List) => (l.id === updatedList.id ? updatedList : l)))
-    setSelectedListId(updatedList.id!)
-    setShowSettingsModal(false)
-    setSettingsList(null)
-  }, [lists, setLists, setSelectedListId])
+  const handleSettingsSuccess = useCallback(
+    (updatedList: List) => {
+      if (!isMountedRef.current) return
+      setLists(
+        lists.map((l: List) => (l.id === updatedList.id ? updatedList : l)),
+      )
+      setSelectedListId(updatedList.id!)
+      setShowSettingsModal(false)
+      setSettingsList(null)
+    },
+    [lists, setLists, setSelectedListId],
+  )
 
   const handleCreateListClick = useCallback((e: Event) => {
     e.stopPropagation()
@@ -96,21 +114,34 @@ const LearningSelector: FunctionComponent = () => {
     setIsDropdownOpen(false)
   }, [])
 
-  const handleCreateListSuccess = useCallback(async (listId: number) => {
-    if (!isMountedRef.current) return
-    const newList = await db.lists.get(listId)
-    if (newList && isMountedRef.current) {
-      setLists([...lists, newList])
-      setSelectedListId(newList.id!)
-    }
-    setShowCreateListModal(false)
-  }, [lists, setLists, setSelectedListId])
+  const handleCreateListSuccess = useCallback(
+    async (listId: number) => {
+      if (!isMountedRef.current) return
+      const newList = await db.lists.get(listId)
+      if (newList && isMountedRef.current) {
+        setLists([...lists, newList])
+        setSelectedListId(newList.id!)
+      }
+      setShowCreateListModal(false)
+    },
+    [lists, setLists, setSelectedListId],
+  )
 
-  const currentList = selectedList?.id !== undefined ? selectedList : lists.length > 0 ? lists[0] : null
+  const currentList =
+    selectedList?.id !== undefined
+      ? selectedList
+      : lists.length > 0
+      ? lists[0]
+      : null
 
   return (
     <>
-      <div class="relative" ref={dropdownRef} id={selectorIdRef.current} data-selector="learning">
+      <div
+        class="relative"
+        ref={dropdownRef}
+        id={selectorIdRef.current}
+        data-selector="learning"
+      >
         <button
           ref={buttonRef}
           type="button"
@@ -125,12 +156,19 @@ const LearningSelector: FunctionComponent = () => {
         >
           <span class="truncate">{currentList?.title || 'Select a deck'}</span>
           <svg
-            class={`size-4 shrink-0 transition-transform duration-fast ${isDropdownOpen ? 'rotate-180' : ''}`}
+            class={`size-4 shrink-0 transition-transform duration-fast ${
+              isDropdownOpen ? 'rotate-180' : ''
+            }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
@@ -159,9 +197,24 @@ const LearningSelector: FunctionComponent = () => {
                     class="ml-2 rounded-md p-1 text-neutral-400 transition-colors duration-fast hover:bg-neutral-100 hover:text-brand-600"
                     title="Deck Settings"
                   >
-                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <svg
+                      class="size-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -174,8 +227,18 @@ const LearningSelector: FunctionComponent = () => {
               onClick={handleCreateListClick}
               class="flex w-full items-center justify-center gap-2 px-4 py-3 text-brand-600 transition-colors duration-fast hover:bg-brand-50"
             >
-              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <svg
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               <span class="font-medium">Create New Deck</span>
             </button>
@@ -183,13 +246,24 @@ const LearningSelector: FunctionComponent = () => {
         )}
       </div>
 
-      <Modal isOpen={showCreateListModal} onClose={() => setShowCreateListModal(false)} title="Create New Deck" size="md">
-        <CreateListModalContent onSuccess={handleCreateListSuccess} onCancel={() => setShowCreateListModal(false)} />
+      <Modal
+        isOpen={showCreateListModal}
+        onClose={() => setShowCreateListModal(false)}
+        title="Create New Deck"
+        size="md"
+      >
+        <CreateListModalContent
+          onSuccess={handleCreateListSuccess}
+          onCancel={() => setShowCreateListModal(false)}
+        />
       </Modal>
 
       <Modal
         isOpen={showSettingsModal}
-        onClose={() => { setShowSettingsModal(false); setSettingsList(null) }}
+        onClose={() => {
+          setShowSettingsModal(false)
+          setSettingsList(null)
+        }}
         title="Deck Settings"
         size="md"
       >
@@ -197,7 +271,10 @@ const LearningSelector: FunctionComponent = () => {
           <DeckSettingsModalContent
             list={settingsList}
             onSuccess={handleSettingsSuccess}
-            onCancel={() => { setShowSettingsModal(false); setSettingsList(null) }}
+            onCancel={() => {
+              setShowSettingsModal(false)
+              setSettingsList(null)
+            }}
           />
         )}
       </Modal>

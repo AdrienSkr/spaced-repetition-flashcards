@@ -121,7 +121,7 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
           <div class="flex animate-fade-in flex-col items-center gap-6">
             {isCorrect ? (
               <>
-                <div class="mb-2 icon-container rounded-lg bg-success-light p-4">
+                <div class="icon-container mb-2 rounded-lg bg-success-light p-4">
                   <svg
                     class="size-10 text-success"
                     fill="none"
@@ -140,7 +140,7 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
               </>
             ) : (
               <>
-                <div class="mb-2 icon-container rounded-lg bg-error-light p-4">
+                <div class="icon-container mb-2 rounded-lg bg-error-light p-4">
                   <svg
                     class="size-10 text-error"
                     fill="none"

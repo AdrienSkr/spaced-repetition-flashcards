@@ -31,7 +31,7 @@ function App() {
       <LearningProvider>
         <div className="flex min-h-screen flex-col bg-surface-bg">
           <TopBar currentPage={currentPage} />
-          <main className="flex grow flex-col items-center justify-center px-4 pt-14 pb-24">
+          <main className="flex grow flex-col items-center justify-center px-4 pb-24 pt-14">
             <div className="w-full max-w-5xl">{renderPage()}</div>
           </main>
           <BottomBar

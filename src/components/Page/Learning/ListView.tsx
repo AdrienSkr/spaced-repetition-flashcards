@@ -162,7 +162,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   if (cards.length === 0) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
-        <div class="mb-6 icon-container rounded-lg bg-brand-100 p-4">
+        <div class="icon-container mb-6 rounded-lg bg-brand-100 p-4">
           <Icon name="empty-box" size={48} color="#0ea5e9" />
         </div>
         <h2 class="mb-2 text-xl font-semibold text-neutral-900">
@@ -199,7 +199,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   if (isFreePractice && freePracticeCards.length === 0) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
-        <div class="mb-6 icon-container rounded-lg bg-brand-100 p-4">
+        <div class="icon-container mb-6 rounded-lg bg-brand-100 p-4">
           <Icon name="celebration" size={48} color="#0ea5e9" />
         </div>
         <h2 class="mb-2 text-xl font-semibold text-neutral-900">
@@ -223,7 +223,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   if (totalRemaining === 0 && !isFreePractice) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
-        <div class="mb-6 icon-container rounded-lg bg-success-light p-4">
+        <div class="icon-container mb-6 rounded-lg bg-success-light p-4">
           <Icon name="celebration" size={48} color="#22c55e" />
         </div>
         <h2 class="mb-2 text-xl font-semibold text-neutral-900">
