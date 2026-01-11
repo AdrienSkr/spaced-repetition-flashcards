@@ -18,14 +18,17 @@ type NavItemProps = {
 
 function NavItem({ icon, label, page, isActive, onClick }: NavItemProps) {
   return (
-    <div
+    <button
+      type="button"
       className={`nav-item group ${isActive ? 'nav-item-active' : ''}`}
       onClick={() => onClick(page)}
+      aria-current={isActive ? 'page' : undefined}
     >
       <div className={`nav-icon ${isActive ? 'nav-icon-active' : ''}`}>
         <img
           src={icon}
-          alt={label}
+          alt=""
+          aria-hidden="true"
           className="size-full transition-all duration-fast group-hover:scale-110"
         />
       </div>
@@ -45,7 +48,7 @@ function NavItem({ icon, label, page, isActive, onClick }: NavItemProps) {
           {label}
         </span>
       </span>
-    </div>
+    </button>
   )
 }
 

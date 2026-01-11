@@ -157,11 +157,11 @@ export function ProgressPage() {
 
           {dueNowCount > 0 && (
             <div class="mt-6 rounded-lg bg-warning-light p-4">
-              <p class="flex items-start gap-2 text-sm text-warning">
+              <p class="flex items-start gap-2 text-sm text-warning-dark">
                 <Icon
                   name="lightbulb"
                   size={20}
-                  color="#f59e0b"
+                  color="#b45309"
                   class="mt-0.5 shrink-0"
                 />
                 <span>

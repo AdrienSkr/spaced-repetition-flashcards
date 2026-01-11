@@ -50,6 +50,7 @@ export default {
         error: {
           DEFAULT: '#ef4444',
           light: '#fee2e2',
+          dark: '#b91c1c',
         },
         // Mastery level colors
         mastery: {

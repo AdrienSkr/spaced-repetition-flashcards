@@ -1,6 +1,6 @@
 import { ComponentChildren } from 'preact'
 import { createPortal } from 'preact/compat'
-import { useEffect, useState } from 'preact/hooks'
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 
 interface ModalProps {
   isOpen: boolean
@@ -10,6 +10,10 @@ interface ModalProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
+// Sélecteur pour les éléments focusables
+const FOCUSABLE_SELECTOR = 
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
 export function Modal({
   isOpen,
   onClose,
@@ -18,10 +22,15 @@ export function Modal({
   size = 'md',
 }: ModalProps) {
   const [container, setContainer] = useState<HTMLDivElement | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previousActiveElement = useRef<HTMLElement | null>(null)
 
   // Create/remove portal container
   useEffect(() => {
     if (isOpen) {
+      // Sauvegarder l'élément actif avant l'ouverture
+      previousActiveElement.current = document.activeElement as HTMLElement
+
       const div = document.createElement('div')
       div.id = 'modal-portal-' + Math.random().toString(36).substr(2, 9)
       document.body.appendChild(div)
@@ -31,25 +40,69 @@ export function Modal({
       return () => {
         document.body.removeChild(div)
         document.body.style.overflow = ''
+        // Restaurer le focus à la fermeture
+        if (previousActiveElement.current && previousActiveElement.current.focus) {
+          previousActiveElement.current.focus()
+        }
       }
     } else {
       setContainer(null)
     }
   }, [isOpen])
 
-  // Handle Escape key
+  // Focus sur le premier élément focusable à l'ouverture
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return
+
+    // Petit délai pour s'assurer que le contenu est rendu
+    const timeoutId = setTimeout(() => {
+      if (modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+        if (focusableElements.length > 0) {
+          focusableElements[0].focus()
+        } else {
+          // Si aucun élément focusable, focus sur le conteneur
+          modalRef.current.focus()
+        }
+      }
+    }, 10)
+
+    return () => clearTimeout(timeoutId)
+  }, [isOpen, container])
+
+  // Focus trap et gestion Escape
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose()
+      return
+    }
+
+    if (e.key !== 'Tab' || !modalRef.current) return
+
+    const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+    if (focusableElements.length === 0) return
+
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+
+    // Shift + Tab sur le premier élément -> aller au dernier
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault()
+      lastElement.focus()
+    }
+    // Tab sur le dernier élément -> aller au premier
+    else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault()
+      firstElement.focus()
+    }
+  }, [onClose])
+
   useEffect(() => {
     if (!isOpen) return
 
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen, onClose])
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, handleKeyDown])
 
   if (!isOpen || !container) return null
 
@@ -84,10 +137,12 @@ export function Modal({
       }}
     >
       <div
-        class={`${sizeClasses[size]} w-full animate-bounce-in rounded-lg bg-surface-card shadow-lg`}
+        ref={modalRef}
+        class={`${sizeClasses[size]} w-full animate-bounce-in rounded-lg bg-surface-card shadow-lg focus:outline-none`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1}
         onClick={(e: MouseEvent) => e.stopPropagation()}
         style={{
           position: 'relative',

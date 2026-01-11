@@ -1,3 +1,4 @@
+import type { JSX } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 import { Card as CardType } from '../../../../models/Card'
 import { getMasteryLevel, ModeAnswerData } from '../../../../utils/sm2'
@@ -39,6 +40,13 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
 
   const handleFlip = () => setIsFlipped(!isFlipped)
 
+  const handleFlipKeyDown = (e: JSX.TargetedKeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handleFlip()
+    }
+  }
+
   const handleAnswer = (isCorrect: boolean) => {
     setAnimationClass(isCorrect ? 'answer-correct' : 'answer-incorrect')
     setTimeout(() => onAnswer(card, { isCorrect }), 200)
@@ -79,13 +87,17 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
 
         {!isFlipped ? (
           <div
-            class="flex w-full cursor-pointer flex-col items-center gap-8"
+            class="flex w-full cursor-pointer flex-col items-center gap-8 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-brand-400"
             onClick={handleFlip}
+            onKeyDown={handleFlipKeyDown}
+            tabIndex={0}
+            role="button"
+            aria-label="Retourner la carte pour voir la réponse"
           >
             <h3 class="text-center text-xl font-semibold leading-relaxed text-neutral-900 md:text-2xl">
               {card.question}
             </h3>
-            <p class="text-sm text-neutral-400">Cliquez pour voir la réponse</p>
+            <p class="text-sm text-neutral-400">Appuyez sur Entrée ou cliquez pour voir la réponse</p>
           </div>
         ) : (
           <div class="flex w-full animate-fade-in flex-col items-center gap-8">

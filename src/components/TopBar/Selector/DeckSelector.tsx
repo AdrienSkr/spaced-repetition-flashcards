@@ -13,11 +13,17 @@ const DeckSelector: FunctionComponent = () => {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [settingsList, setSettingsList] = useState<List | null>(null)
+  const [focusedIndex, setFocusedIndex] = useState(-1)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const listboxRef = useRef<HTMLDivElement>(null)
   const [dropdownWidth, setDropdownWidth] = useState<number | undefined>(undefined)
   const isMountedRef = useRef(true)
   const selectorIdRef = useRef(`deck-selector-${Math.random().toString(36).slice(2, 11)}`)
+  const listboxId = `${selectorIdRef.current}-listbox`
+  
+  // Toutes les options : "All Cards" (id=0) + les listes
+  const allOptions = [{ id: 0, title: 'All Cards' }, ...lists.map(l => ({ id: l.id!, title: l.title }))]
 
   useEffect(() => {
     isMountedRef.current = true
@@ -36,6 +42,23 @@ const DeckSelector: FunctionComponent = () => {
     }
   }, [isDropdownOpen])
 
+  const handleListSelect = useCallback((listId: number) => {
+    if (!isMountedRef.current) return
+    setSelectedListId(listId)
+    setIsDropdownOpen(false)
+  }, [setSelectedListId])
+
+  // Reset focus index quand le dropdown s'ouvre
+  useEffect(() => {
+    if (isDropdownOpen) {
+      // Trouver l'index de l'élément sélectionné
+      const selectedIndex = allOptions.findIndex(opt => opt.id === selectedListId)
+      setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0)
+    } else {
+      setFocusedIndex(-1)
+    }
+  }, [isDropdownOpen, selectedListId, allOptions.length])
+
   useEffect(() => {
     if (!isDropdownOpen || !isMountedRef.current) return
     const dropdownElement = dropdownRef.current
@@ -44,32 +67,57 @@ const DeckSelector: FunctionComponent = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMountedRef.current && dropdownElement && !dropdownElement.contains(event.target as Node)) {
         setIsDropdownOpen(false)
+        buttonRef.current?.focus()
       }
     }
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (isMountedRef.current && event.key === 'Escape') {
-        setIsDropdownOpen(false)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isMountedRef.current) return
+
+      switch (event.key) {
+        case 'Escape':
+          event.preventDefault()
+          setIsDropdownOpen(false)
+          buttonRef.current?.focus()
+          break
+        case 'ArrowDown':
+          event.preventDefault()
+          setFocusedIndex(prev => Math.min(prev + 1, allOptions.length - 1))
+          break
+        case 'ArrowUp':
+          event.preventDefault()
+          setFocusedIndex(prev => Math.max(prev - 1, 0))
+          break
+        case 'Home':
+          event.preventDefault()
+          setFocusedIndex(0)
+          break
+        case 'End':
+          event.preventDefault()
+          setFocusedIndex(allOptions.length - 1)
+          break
+        case 'Enter':
+        case ' ':
+          event.preventDefault()
+          if (focusedIndex >= 0 && focusedIndex < allOptions.length) {
+            handleListSelect(allOptions[focusedIndex].id)
+            buttonRef.current?.focus()
+          }
+          break
       }
     }
 
     const timeoutId = setTimeout(() => {
       document.addEventListener('mousedown', handleClickOutside, true)
-      document.addEventListener('keydown', handleEscape, true)
+      document.addEventListener('keydown', handleKeyDown, true)
     }, 10)
 
     return () => {
       clearTimeout(timeoutId)
       document.removeEventListener('mousedown', handleClickOutside, true)
-      document.removeEventListener('keydown', handleEscape, true)
+      document.removeEventListener('keydown', handleKeyDown, true)
     }
-  }, [isDropdownOpen])
-
-  const handleListSelect = useCallback((listId: number) => {
-    if (!isMountedRef.current) return
-    setSelectedListId(listId)
-    setIsDropdownOpen(false)
-  }, [setSelectedListId])
+  }, [isDropdownOpen, focusedIndex, allOptions, handleListSelect])
 
   const handleSettingsClick = useCallback((e: Event, list: List) => {
     e.stopPropagation()
@@ -124,6 +172,18 @@ const DeckSelector: FunctionComponent = () => {
               setIsDropdownOpen((prev) => !prev)
             }
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+              e.preventDefault()
+              if (!isDropdownOpen) {
+                setIsDropdownOpen(true)
+              }
+            }
+          }}
+          aria-haspopup="listbox"
+          aria-expanded={isDropdownOpen}
+          aria-controls={listboxId}
+          aria-label={`Deck sélectionné: ${currentListTitle}`}
           class="flex min-w-[200px] items-center justify-between gap-2 rounded-lg border-2 border-neutral-200 bg-white px-4 py-1.5 font-medium text-neutral-700 transition-all duration-fast hover:border-brand-300 hover:shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
         >
           <span class="truncate">{currentListTitle}</span>
@@ -132,6 +192,7 @@ const DeckSelector: FunctionComponent = () => {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
@@ -140,59 +201,76 @@ const DeckSelector: FunctionComponent = () => {
         {/* Dropdown Menu */}
         {isDropdownOpen && (
           <div 
+            ref={listboxRef}
+            id={listboxId}
+            role="listbox"
+            aria-label="Sélectionner un deck"
+            aria-activedescendant={focusedIndex >= 0 ? `${listboxId}-option-${focusedIndex}` : undefined}
             data-dropdown-menu="deck"
             class="absolute left-0 top-full z-[100] mt-2 min-w-[200px] rounded-lg border border-neutral-200 bg-white shadow-lg"
             style={{ width: dropdownWidth ? `${dropdownWidth}px` : '100%' }}
+            tabIndex={-1}
           >
             {/* All Cards Option */}
-            <button
+            <div
+              id={`${listboxId}-option-0`}
+              role="option"
+              aria-selected={selectedListId === 0}
               onClick={() => handleListSelect(0)}
-              class={`w-full px-4 py-2 text-left font-medium transition-colors duration-fast hover:bg-brand-50 ${
+              class={`w-full cursor-pointer px-4 py-2 text-left font-medium transition-colors duration-fast hover:bg-brand-50 ${
                 selectedListId === 0 ? 'bg-brand-100 text-brand-700' : 'text-neutral-700'
-              }`}
+              } ${focusedIndex === 0 ? 'ring-2 ring-inset ring-brand-400' : ''}`}
             >
               All Cards
-            </button>
+            </div>
 
-            {lists.length > 0 && <div class="border-t border-neutral-100" />}
+            {lists.length > 0 && <div class="border-t border-neutral-100" role="separator" />}
 
             {/* List of decks */}
             <div class="max-h-60 overflow-y-auto">
-              {lists.map((list) => (
-                <div
-                  key={list.id}
-                  class={`flex items-center justify-between px-4 py-2 transition-colors duration-fast hover:bg-brand-50 ${
-                    selectedListId === list.id ? 'bg-brand-100' : ''
-                  }`}
-                >
-                  <button
-                    onClick={() => handleListSelect(list.id!)}
-                    class="flex-1 text-left font-medium text-neutral-700 hover:text-brand-600"
+              {lists.map((list, index) => {
+                const optionIndex = index + 1 // +1 car "All Cards" est à l'index 0
+                return (
+                  <div
+                    key={list.id}
+                    id={`${listboxId}-option-${optionIndex}`}
+                    role="option"
+                    aria-selected={selectedListId === list.id}
+                    class={`flex cursor-pointer items-center justify-between px-4 py-2 transition-colors duration-fast hover:bg-brand-50 ${
+                      selectedListId === list.id ? 'bg-brand-100' : ''
+                    } ${focusedIndex === optionIndex ? 'ring-2 ring-inset ring-brand-400' : ''}`}
                   >
-                    {list.title}
-                  </button>
-                  <button
-                    onClick={(e) => handleSettingsClick(e, list)}
-                    class="ml-2 rounded-md p-1 text-neutral-400 transition-colors duration-fast hover:bg-neutral-100 hover:text-brand-600"
-                    title="Deck Settings"
-                  >
-                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
+                    <span
+                      onClick={() => handleListSelect(list.id!)}
+                      class="flex-1 text-left font-medium text-neutral-700 hover:text-brand-600"
+                    >
+                      {list.title}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => handleSettingsClick(e, list)}
+                      class="ml-2 rounded-md p-1 text-neutral-400 transition-colors duration-fast hover:bg-neutral-100 hover:text-brand-600"
+                      aria-label={`Paramètres du deck ${list.title}`}
+                    >
+                      <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </button>
+                  </div>
+                )
+              })}
             </div>
 
-            {(lists.length > 0 || selectedListId === 0) && <div class="border-t border-neutral-100" />}
+            {(lists.length > 0 || selectedListId === 0) && <div class="border-t border-neutral-100" role="separator" />}
 
             {/* Create New Deck Button */}
             <button
+              type="button"
               onClick={handleCreateListClick}
               class="flex w-full items-center justify-center gap-2 px-4 py-3 text-brand-600 transition-colors duration-fast hover:bg-brand-50"
             >
-              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
               <span class="font-medium">Create New Deck</span>

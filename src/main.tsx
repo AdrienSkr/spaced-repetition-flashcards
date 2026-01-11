@@ -30,8 +30,19 @@ function App() {
     <ListSelectorProvider>
       <LearningProvider>
         <div className="flex min-h-screen flex-col bg-surface-bg">
+          {/* Skip link pour l'accessibilité clavier */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100000] focus:rounded-md focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-400"
+          >
+            Aller au contenu principal
+          </a>
           <TopBar currentPage={currentPage} />
-          <main className="flex grow flex-col items-center justify-center px-4 pb-24 pt-14">
+          <main
+            id="main-content"
+            className="flex grow flex-col items-center justify-center px-4 pb-24 pt-14"
+            tabIndex={-1}
+          >
             <div className="w-full max-w-5xl">{renderPage()}</div>
           </main>
           <BottomBar

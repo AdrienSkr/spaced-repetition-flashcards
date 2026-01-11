@@ -65,12 +65,12 @@ export function AlgorithmExplainer() {
         </div>
 
         {/* What happens on wrong answer */}
-        <div class="rounded-lg border-2 border-error bg-error-light p-4">
-          <h4 class="mb-2 flex items-center gap-2 text-sm font-semibold text-error">
-            <Icon name="cross" size={18} color="#ef4444" />
+        <div class="rounded-lg border-2 border-error-dark bg-error-light p-4">
+          <h4 class="mb-2 flex items-center gap-2 text-sm font-semibold text-error-dark">
+            <Icon name="cross" size={18} color="#b91c1c" />
             What happens when you get it wrong?
           </h4>
-          <p class="text-sm text-error">
+          <p class="text-sm text-error-dark">
             The card resets to <strong>Consolidating</strong> status
             (repetitions = 0) and is scheduled for review
             <strong> tomorrow</strong> (interval = 1 day). This ensures you see

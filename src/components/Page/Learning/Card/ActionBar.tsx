@@ -41,29 +41,37 @@ export const ActionBar = ({ card, listId, onAddCard, onEditCard }: ActionBarProp
     disabled?: boolean
     isActive?: boolean
   }) => (
-    <div
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={isActive}
+      aria-label={label}
       class={`group relative flex size-7 items-center justify-center rounded-md p-1 
-             transition-all duration-fast 
+             transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-brand-400
              ${disabled 
                ? 'cursor-not-allowed opacity-40' 
                : isActive
                  ? 'cursor-pointer bg-brand-200 shadow-sm ring-2 ring-brand-400'
                  : 'cursor-pointer hover:bg-brand-100 hover:shadow-sm active:bg-brand-200'
              }`}
-      onClick={disabled ? undefined : onClick}
     >
       <img
         src={icon}
-        alt={`${label} icon`}
+        alt=""
+        aria-hidden="true"
         class={`size-full transition-transform duration-fast ${!disabled && 'group-hover:scale-110'}`}
       />
-      <span class="pointer-events-none absolute -bottom-8 left-1/2 z-10 
-                   -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-800 px-2 py-1 
-                   text-xs text-white opacity-0 
-                   transition-opacity duration-fast group-hover:opacity-100">
+      <span 
+        class="pointer-events-none absolute -bottom-8 left-1/2 z-10 
+               -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-800 px-2 py-1 
+               text-xs text-white opacity-0 
+               transition-opacity duration-fast group-hover:opacity-100"
+        role="tooltip"
+      >
         {label}
       </span>
-    </div>
+    </button>
   )
 
   return (
