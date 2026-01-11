@@ -14,49 +14,6 @@ export function AlgorithmExplainer() {
           reviews just before you're about to forget, making memories stick permanently.
         </p>
 
-        {/* Forgetting Curve Visualization */}
-        <div class="my-6 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 p-6">
-          <h4 class="mb-4 text-sm font-semibold uppercase tracking-wide text-primary-700">
-            The Forgetting Curve
-          </h4>
-          
-          <div class="relative h-32">
-            {/* Y-axis label */}
-            <div class="absolute inset-y-0 -left-2 flex items-center">
-              <span class="-rotate-90 whitespace-nowrap text-xs text-gray-500">Memory %</span>
-            </div>
-            
-            {/* Graph area */}
-            <div class="ml-6 flex h-full items-end justify-between gap-1">
-              {/* Bars representing memory retention with reviews */}
-              <div class="flex flex-1 flex-col items-center">
-                <div class="w-full rounded-t bg-primary-500" style="height: 100%"></div>
-                <span class="mt-1 text-xs text-gray-500">Now</span>
-              </div>
-              <div class="flex flex-1 flex-col items-center">
-                <div class="w-full rounded-t bg-primary-400" style="height: 70%"></div>
-                <span class="mt-1 text-xs text-gray-500">1d</span>
-              </div>
-              <div class="flex flex-1 flex-col items-center">
-                <div class="w-full rounded-t bg-success" style="height: 90%"></div>
-                <span class="mt-1 text-xs text-primary-600">Review</span>
-              </div>
-              <div class="flex flex-1 flex-col items-center">
-                <div class="w-full rounded-t bg-primary-400" style="height: 75%"></div>
-                <span class="mt-1 text-xs text-gray-500">6d</span>
-              </div>
-              <div class="flex flex-1 flex-col items-center">
-                <div class="w-full rounded-t bg-success" style="height: 95%"></div>
-                <span class="mt-1 text-xs text-primary-600">Review</span>
-              </div>
-              <div class="flex flex-1 flex-col items-center">
-                <div class="w-full rounded-t bg-primary-300" style="height: 85%"></div>
-                <span class="mt-1 text-xs text-gray-500">21d</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Algorithm Explanation */}
         <div class="space-y-3">
           <h4 class="font-semibold text-gray-900">SM-2 Algorithm</h4>
