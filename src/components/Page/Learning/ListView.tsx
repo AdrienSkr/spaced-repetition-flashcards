@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import { Card as CardType } from '../../../models/Card'
 import { db } from '../../../models/db'
 import { List } from '../../../models/List'
@@ -22,6 +22,12 @@ interface ListViewProps {
 export function ListView({ list, onAddCard }: ListViewProps) {
   const { learningMode } = useLearningContext()
   const [startTime, setStartTime] = useState<number>(Date.now())
+  const [retryQueue, setRetryQueue] = useState<number[]>([])
+
+  // Reset retry queue when list changes
+  useEffect(() => {
+    setRetryQueue([])
+  }, [list.id])
 
   // Fetch cards that are due for review
   const cards = useLiveQuery(async () => {
@@ -45,7 +51,15 @@ export function ListView({ list, onAddCard }: ListViewProps) {
 
   // Filter to get only due cards
   const dueCards = cards?.filter((card) => isDue(card.nextReview || 0)) || []
-  const currentCard = dueCards[0]
+  
+  // Filter retry cards (cards in retryQueue that are not already in dueCards)
+  const dueCardIds = new Set(dueCards.map((card) => card.id).filter((id): id is number => !!id))
+  const retryCards = cards?.filter(
+    (card) => card.id && retryQueue.includes(card.id) && !dueCardIds.has(card.id)
+  ) || []
+  
+  // Select current card: prioritize due cards, then retry cards
+  const currentCard = dueCards[0] || retryCards[0]
 
   // Reset timer when card changes
   const handleCardShow = () => {
@@ -86,6 +100,17 @@ export function ListView({ list, onAddCard }: ListViewProps) {
         delay: result.interval,
         count: result.repetitions,
       })
+
+      // Manage retry queue: add incorrect cards, remove correct ones
+      if (!dataWithTime.isCorrect) {
+        // Add to retry queue if not already present
+        setRetryQueue((prev) =>
+          prev.includes(card.id!) ? prev : [...prev, card.id!],
+        )
+      } else {
+        // Remove from retry queue if answered correctly
+        setRetryQueue((prev) => prev.filter((id) => id !== card.id))
+      }
     }
 
     // Reset timer for next card
@@ -139,8 +164,9 @@ export function ListView({ list, onAddCard }: ListViewProps) {
     )
   }
 
-  // All cards reviewed - deck has cards but none are due
-  if (dueCards.length === 0) {
+  // All cards reviewed - deck has cards but none are due and no retry cards
+  const totalRemaining = dueCards.length + retryCards.length
+  if (totalRemaining === 0) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
         <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-success-light">
@@ -164,7 +190,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
       {/* Progress indicator */}
       <div class="mb-4 flex items-center justify-center gap-4 text-sm text-gray-500">
         <span>
-          {dueCards.length} card{dueCards.length > 1 ? 's' : ''} remaining
+          {totalRemaining} card{totalRemaining > 1 ? 's' : ''} remaining
         </span>
       </div>
 
