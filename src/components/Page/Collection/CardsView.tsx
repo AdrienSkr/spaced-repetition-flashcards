@@ -234,14 +234,14 @@ export function CardsView({ list }: Props) {
                     <button
                       onClick={() => setEditingCard(card)}
                       class="rounded-md p-1 text-neutral-400 transition-colors duration-fast hover:bg-brand-100 hover:text-brand-600"
-                      title="Modifier"
+                      title="Edit"
                     >
                       <Icon name="edit" size={16} />
                     </button>
                     <button
                       onClick={() => setDeletingCard(card)}
                       class="rounded-md p-1 text-neutral-400 transition-colors duration-fast hover:bg-error-light hover:text-error"
-                      title="Supprimer"
+                      title="Delete"
                     >
                       <Icon name="trash" size={16} />
                     </button>
@@ -257,7 +257,7 @@ export function CardsView({ list }: Props) {
       <Modal
         isOpen={editingCard !== null}
         onClose={() => setEditingCard(null)}
-        title="Modifier la carte"
+        title="Edit Card"
       >
         {editingCard && (
           <EditCardModalContent
@@ -272,15 +272,15 @@ export function CardsView({ list }: Props) {
       <Modal
         isOpen={deletingCard !== null}
         onClose={() => setDeletingCard(null)}
-        title="Supprimer la carte"
+        title="Delete Card"
         size="sm"
       >
         {deletingCard && (
           <DeleteConfirmModalContent
-            title="Supprimer cette carte ?"
-            message={`La carte "${deletingCard.question.substring(0, 50)}${
+            title="Delete this card?"
+            message={`The card "${deletingCard.question.substring(0, 50)}${
               deletingCard.question.length > 50 ? '...' : ''
-            }" sera définitivement supprimée.`}
+            }" will be permanently deleted.`}
             onConfirm={async () => {
               if (deletingCard.id) {
                 await db.cards.delete(deletingCard.id)

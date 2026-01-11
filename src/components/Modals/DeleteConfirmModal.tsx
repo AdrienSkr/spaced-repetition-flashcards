@@ -11,7 +11,7 @@ interface DeleteConfirmModalContentProps {
 export function DeleteConfirmModalContent({
   title,
   message,
-  confirmLabel = 'Supprimer',
+  confirmLabel = 'Delete',
   onConfirm,
   onCancel,
 }: DeleteConfirmModalContentProps) {
@@ -57,7 +57,7 @@ export function DeleteConfirmModalContent({
           disabled={isDeleting}
           class="btn-ghost"
         >
-          Annuler
+          Cancel
         </button>
         <button
           type="button"
@@ -65,7 +65,7 @@ export function DeleteConfirmModalContent({
           disabled={isDeleting}
           class="btn-danger"
         >
-          {isDeleting ? 'Suppression...' : confirmLabel}
+          {isDeleting ? 'Deleting...' : confirmLabel}
         </button>
       </div>
     </div>

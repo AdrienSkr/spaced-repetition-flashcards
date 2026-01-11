@@ -61,7 +61,7 @@ export function CollectionPage() {
 
   const handleImportSuccess = (count: number) => {
     setShowImport(false)
-    console.log(`${count} carte(s) importée(s) avec succès`)
+    console.log(`${count} card(s) imported successfully`)
   }
 
   return (
@@ -76,7 +76,7 @@ export function CollectionPage() {
                 <Icon name="folder" size={20} color="#0ea5e9" />
               </div>
               <div>
-                <p class="text-sm text-neutral-500">Cartes</p>
+                <p class="text-sm text-neutral-500">Cards</p>
                 <p class="text-lg font-semibold text-neutral-900">{cardCount}</p>
               </div>
             </div>
@@ -86,7 +86,7 @@ export function CollectionPage() {
                   <Icon name="clock" size={20} color="#b45309" />
                 </div>
                 <div>
-                  <p class="text-sm text-neutral-500">À réviser</p>
+                  <p class="text-sm text-neutral-500">Due</p>
                   <p class="text-lg font-semibold text-warning-dark">{dueCount}</p>
                 </div>
               </div>
@@ -100,28 +100,28 @@ export function CollectionPage() {
               class="btn-primary"
             >
               <Icon name="plus" size={18} />
-              <span>Ajouter</span>
+              <span>Add</span>
             </button>
             <button
               onClick={() => setShowImport(true)}
               class="btn-secondary"
             >
               <Icon name="import" size={18} />
-              <span>Importer</span>
+              <span>Import</span>
             </button>
             <button
               onClick={() => setShowSettings(true)}
               class="btn-ghost"
             >
               <Icon name="settings" size={18} />
-              <span>Paramètres</span>
+              <span>Settings</span>
             </button>
             <button
               onClick={() => setShowDeleteDeck(true)}
               class="btn-danger"
             >
               <Icon name="trash" size={18} />
-              <span>Supprimer</span>
+              <span>Delete</span>
             </button>
           </div>
         </div>
@@ -134,7 +134,7 @@ export function CollectionPage() {
       <Modal
         isOpen={showAddCard}
         onClose={() => setShowAddCard(false)}
-        title="Ajouter une carte"
+        title="Add Card"
       >
         <AddCardModalContent
           listId={selectedListId}
@@ -147,7 +147,7 @@ export function CollectionPage() {
       <Modal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
-        title="Paramètres du deck"
+        title="Deck Settings"
       >
         <DeckSettingsModalContent
           list={listToShow}
@@ -160,13 +160,13 @@ export function CollectionPage() {
       <Modal
         isOpen={showDeleteDeck}
         onClose={() => setShowDeleteDeck(false)}
-        title="Supprimer le deck"
+        title="Delete Deck"
         size="sm"
       >
         <DeleteConfirmModalContent
-          title="Supprimer ce deck ?"
-          message={`Le deck "${listToShow.title}" et toutes ses ${cardCount} carte${cardCount > 1 ? 's' : ''} seront définitivement supprimés.`}
-          confirmLabel="Supprimer le deck"
+          title="Delete this deck?"
+          message={`The deck "${listToShow.title}" and all its ${cardCount} card${cardCount > 1 ? 's' : ''} will be permanently deleted.`}
+          confirmLabel="Delete Deck"
           onConfirm={handleDeleteDeck}
           onCancel={() => setShowDeleteDeck(false)}
         />
@@ -176,7 +176,7 @@ export function CollectionPage() {
       <Modal
         isOpen={showImport}
         onClose={() => setShowImport(false)}
-        title="Importer des cartes"
+        title="Import Cards"
         size="lg"
       >
         <ImportCardsModalContent

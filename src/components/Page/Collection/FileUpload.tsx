@@ -21,7 +21,7 @@ const FileUpload: preact.FunctionComponent<FileUploadProps> = ({
       setFile(selectedFile)
       readFileContent(selectedFile)
     } else {
-      alert('Veuillez sélectionner un fichier CSV, JSON ou TXT.')
+      alert('Please select a CSV, JSON or TXT file.')
     }
   }
 
@@ -32,7 +32,7 @@ const FileUpload: preact.FunctionComponent<FileUploadProps> = ({
       setFile(droppedFile)
       readFileContent(droppedFile)
     } else {
-      alert('Veuillez déposer un fichier CSV, JSON ou TXT.')
+      alert('Please drop a CSV, JSON or TXT file.')
     }
   }
 
@@ -93,7 +93,7 @@ const FileUpload: preact.FunctionComponent<FileUploadProps> = ({
           className="mx-auto mb-4 text-4xl text-gray-400"
         />
         <p className="text-gray-600">
-          Glissez-déposez un fichier ici ou cliquez pour sélectionner
+          Drag and drop a file here or click to select
         </p>
         <input
           type="file"
@@ -115,7 +115,7 @@ const FileUpload: preact.FunctionComponent<FileUploadProps> = ({
         ref={textAreaRef}
         className="mt-4 w-full rounded-lg border p-2"
         rows={10}
-        placeholder="Collez le contenu du fichier ici..."
+        placeholder="Paste file content here..."
         onPaste={handlePaste}
         onChange={handleTextAreaChange}
         value={fileContent}

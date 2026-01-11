@@ -105,7 +105,7 @@ export function ImportCardsModalContent({
         }
       }
     } catch {
-      setError('Format invalide. Vérifiez le contenu.')
+      setError('Invalid format. Please check the content.')
       return []
     }
 
@@ -135,7 +135,7 @@ export function ImportCardsModalContent({
     const ext = file.name.split('.').pop()?.toLowerCase()
     if (!['csv', 'json', 'txt', 'tsv'].includes(ext || '')) {
       setError(
-        'Format de fichier non supporté. Utilisez CSV, JSON, TSV ou TXT.',
+        'Unsupported file format. Please use CSV, JSON, TSV or TXT.',
       )
       return
     }
@@ -156,7 +156,7 @@ export function ImportCardsModalContent({
       const ext = file.name.split('.').pop()?.toLowerCase()
       if (!['csv', 'json', 'txt', 'tsv'].includes(ext || '')) {
         setError(
-          'Format de fichier non supporté. Utilisez CSV, JSON, TSV ou TXT.',
+          'Unsupported file format. Please use CSV, JSON, TSV or TXT.',
         )
         return
       }
@@ -173,7 +173,7 @@ export function ImportCardsModalContent({
   const handleImport = async () => {
     const validCards = parsedCards.filter((c) => c.valid)
     if (validCards.length === 0) {
-      setError('Aucune carte valide à importer.')
+      setError('No valid cards to import.')
       return
     }
 
@@ -191,7 +191,7 @@ export function ImportCardsModalContent({
       await db.cards.bulkAdd(cardsToAdd)
       onSuccess(validCards.length)
     } catch {
-      setError("Erreur lors de l'importation. Veuillez réessayer.")
+      setError('Error during import. Please try again.')
       setIsImporting(false)
     }
   }
@@ -215,7 +215,7 @@ export function ImportCardsModalContent({
                   : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
               }`}
             >
-              {f === 'auto' ? 'Auto-détection' : f.toUpperCase()}
+              {f === 'auto' ? 'Auto-detect' : f.toUpperCase()}
             </button>
           ))}
         </div>
@@ -232,8 +232,8 @@ export function ImportCardsModalContent({
           <Icon name="import" size={24} color="#0ea5e9" />
         </div>
         <p class="text-sm text-neutral-600">
-          Glissez un fichier ici ou{' '}
-          <span class="font-medium text-brand-600">cliquez pour parcourir</span>
+          Drag a file here or{' '}
+          <span class="font-medium text-brand-600">click to browse</span>
         </p>
         <p class="mt-1 text-xs text-neutral-400">CSV, JSON, TSV ou TXT</p>
         <input
@@ -254,19 +254,19 @@ export function ImportCardsModalContent({
 
       {/* Text area for paste/edit */}
       <div>
-        <label class="label">Ou collez vos données ici</label>
+        <label class="label">Or paste your data here</label>
         <textarea
           value={content}
           onInput={(e) => handleContentChange(e.currentTarget.value)}
-          placeholder={`Exemples de formats acceptés :
+          placeholder={`Examples of accepted formats:
 
-CSV : question;réponse
-Capitale de la France;Paris
-Plus grand océan;Pacifique
+CSV: question;answer
+Capital of France;Paris
+Largest ocean;Pacific
 
-JSON : [{"question": "...", "answer": "..."}]
+JSON: [{"question": "...", "answer": "..."}]
 
-TSV : question[TAB]réponse`}
+TSV: question[TAB]answer`}
           class="input min-h-[120px] resize-none font-mono text-sm"
           rows={5}
         />
@@ -277,13 +277,11 @@ TSV : question[TAB]réponse`}
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <h4 class="text-sm font-medium text-neutral-700">
-              Aperçu ({validCount} carte{validCount > 1 ? 's' : ''} valide
-              {validCount > 1 ? 's' : ''})
+              Preview ({validCount} valid card{validCount > 1 ? 's' : ''})
             </h4>
             {invalidCount > 0 && (
               <span class="text-xs text-warning">
-                {invalidCount} ligne{invalidCount > 1 ? 's' : ''} ignorée
-                {invalidCount > 1 ? 's' : ''}
+                {invalidCount} line{invalidCount > 1 ? 's' : ''} ignored
               </span>
             )}
           </div>
@@ -295,7 +293,7 @@ TSV : question[TAB]réponse`}
                     Question
                   </th>
                   <th class="px-3 py-2 text-left font-medium text-neutral-600">
-                    Réponse
+                    Answer
                   </th>
                 </tr>
               </thead>
@@ -310,7 +308,7 @@ TSV : question[TAB]réponse`}
                       title={card.question}
                     >
                       {card.question || (
-                        <span class="italic text-neutral-400">Vide</span>
+                        <span class="italic text-neutral-400">Empty</span>
                       )}
                     </td>
                     <td
@@ -318,7 +316,7 @@ TSV : question[TAB]réponse`}
                       title={card.answer}
                     >
                       {card.answer || (
-                        <span class="italic text-neutral-400">Vide</span>
+                        <span class="italic text-neutral-400">Empty</span>
                       )}
                     </td>
                   </tr>
@@ -327,8 +325,7 @@ TSV : question[TAB]réponse`}
             </table>
             {parsedCards.length > 10 && (
               <div class="bg-neutral-50 px-3 py-2 text-center text-xs text-neutral-500">
-                Et {parsedCards.length - 10} autre
-                {parsedCards.length - 10 > 1 ? 's' : ''} carte
+                And {parsedCards.length - 10} more card
                 {parsedCards.length - 10 > 1 ? 's' : ''}...
               </div>
             )}
@@ -341,7 +338,7 @@ TSV : question[TAB]réponse`}
       {/* Actions */}
       <div class="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} class="btn-ghost">
-          Annuler
+          Cancel
         </button>
         <button
           type="button"
@@ -350,8 +347,8 @@ TSV : question[TAB]réponse`}
           class="btn-primary"
         >
           {isImporting
-            ? 'Importation...'
-            : `Importer ${validCount} carte${validCount > 1 ? 's' : ''}`}
+            ? 'Importing...'
+            : `Import ${validCount} card${validCount > 1 ? 's' : ''}`}
         </button>
       </div>
     </div>

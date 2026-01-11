@@ -183,7 +183,7 @@ const DeckSelector: FunctionComponent = () => {
           aria-haspopup="listbox"
           aria-expanded={isDropdownOpen}
           aria-controls={listboxId}
-          aria-label={`Deck sélectionné: ${currentListTitle}`}
+          aria-label={`Selected deck: ${currentListTitle}`}
           class="flex min-w-[200px] items-center justify-between gap-2 rounded-lg border-2 border-neutral-200 bg-white px-4 py-1.5 font-medium text-neutral-700 transition-all duration-fast hover:border-brand-300 hover:shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
         >
           <span class="truncate">{currentListTitle}</span>
@@ -204,7 +204,7 @@ const DeckSelector: FunctionComponent = () => {
             ref={listboxRef}
             id={listboxId}
             role="listbox"
-            aria-label="Sélectionner un deck"
+            aria-label="Select a deck"
             aria-activedescendant={focusedIndex >= 0 ? `${listboxId}-option-${focusedIndex}` : undefined}
             data-dropdown-menu="deck"
             class="absolute left-0 top-full z-[100] mt-2 min-w-[200px] rounded-lg border border-neutral-200 bg-white shadow-lg"
@@ -250,7 +250,7 @@ const DeckSelector: FunctionComponent = () => {
                       type="button"
                       onClick={(e) => handleSettingsClick(e, list)}
                       class="ml-2 rounded-md p-1 text-neutral-400 transition-colors duration-fast hover:bg-neutral-100 hover:text-brand-600"
-                      aria-label={`Paramètres du deck ${list.title}`}
+                      aria-label={`Settings for deck ${list.title}`}
                     >
                       <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
