@@ -54,7 +54,9 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
   }, [card.id, fillInData.blanks.length])
 
   useEffect(() => {
-    if (!isSubmitted) {
+    if (isSubmitted) {
+      document.getElementById('fill-in-card')?.focus()
+    } else {
       document.getElementById('blank-0')?.focus()
     }
   }, [isSubmitted, card.id])
@@ -68,6 +70,7 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
   const handleKeyDown = (e: JSX.TargetedKeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === 'Enter') {
       e.preventDefault()
+      e.stopPropagation()
       if (index < fillInData.blanks.length - 1) {
         document.getElementById(`blank-${index + 1}`)?.focus()
       } else {
@@ -91,6 +94,13 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
     const correctCount = correctAnswers.filter((r) => r).length
     const allCorrect = correctAnswers.every((r) => r)
     onAnswer(card, { isCorrect: allCorrect, correctBlanks: correctCount, totalBlanks: fillInData.blanks.length })
+  }
+
+  const handleCardKeyDown = (e: JSX.TargetedKeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && isSubmitted) {
+      e.preventDefault()
+      handleContinue()
+    }
   }
 
   const renderTextWithBlanks = () => {
@@ -142,9 +152,15 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
 
   return (
     <div
+      id="fill-in-card"
+      tabIndex={0}
+      onClick={isSubmitted ? handleContinue : undefined}
+      onKeyDown={handleCardKeyDown}
       class={`relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
               rounded-lg bg-surface-card p-8 shadow-lg 
-              transition-all duration-normal hover:shadow-lg
+              transition-all duration-normal 
+              hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-400
+              ${isSubmitted ? 'cursor-pointer active:scale-[0.99]' : ''}
               ${animationClass}`}
     >
       {/* Mastery indicator */}
@@ -174,7 +190,7 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
           <p class="mb-4 text-sm text-neutral-400">
             Press <kbd class="rounded-md bg-neutral-100 px-2 py-1 text-xs">Enter</kbd> or click to continue
           </p>
-          <button onClick={handleContinue} class="btn-primary">Continue</button>
+          <button onClick={(e) => { e.stopPropagation(); handleContinue() }} class="btn-primary">Continue</button>
         </div>
       ) : (
         <button onClick={handleSubmit} disabled={answers.some((a) => !a.trim())} class="btn-primary mt-6">

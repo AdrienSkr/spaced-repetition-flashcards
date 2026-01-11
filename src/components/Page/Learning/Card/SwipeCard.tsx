@@ -38,6 +38,12 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
     setAnimationClass('')
   }, [card.id])
 
+  useEffect(() => {
+    if (!isFlipped) {
+      document.getElementById('swipe-card-question')?.focus()
+    }
+  }, [isFlipped, card.id])
+
   const handleFlip = () => setIsFlipped(!isFlipped)
 
   const handleFlipKeyDown = (e: JSX.TargetedKeyboardEvent<HTMLDivElement>) => {
@@ -87,6 +93,7 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
 
         {!isFlipped ? (
           <div
+            id="swipe-card-question"
             class="flex w-full cursor-pointer flex-col items-center gap-8 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-brand-400"
             onClick={handleFlip}
             onKeyDown={handleFlipKeyDown}
