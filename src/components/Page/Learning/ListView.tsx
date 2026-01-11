@@ -340,7 +340,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span class="text-sm font-medium">
+            <span class="text-sm font-medium text-neutral-700">
               Free practice mode
               {freePracticeMode === 'future' &&
                 ` (next ${freePracticeDaysAhead} day${
@@ -348,7 +348,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
                 })`}
               {freePracticeMode === 'all' && ' (all cards)'}
             </span>
-            <span class="text-xs">– Progress won't be saved</span>
+            <span class="text-xs text-neutral-700">– Progress won't be saved</span>
           </div>
           <button
             onClick={stopFreePractice}
