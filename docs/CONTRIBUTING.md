@@ -8,11 +8,8 @@ Thank you for your interest in contributing to PairWise Cards! This guide will h
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Project Structure](#project-structure)
-- [Code Style](#code-style)
 - [Git Workflow](#git-workflow)
 - [Submitting Changes](#submitting-changes)
-- [Testing](#testing)
-- [Reporting Issues](#reporting-issues)
 
 ---
 
@@ -72,9 +69,9 @@ The app will be available at `http://localhost:5173` with hot module replacement
 
 ### Useful Development URLs
 
-| URL | Purpose |
-|-----|---------|
-| `http://localhost:5173` | Main application |
+| URL                                | Purpose                          |
+| ---------------------------------- | -------------------------------- |
+| `http://localhost:5173`            | Main application                 |
 | `http://localhost:5173?onboarding` | Test onboarding flow (clears DB) |
 
 ### Development Mode Features
@@ -106,93 +103,19 @@ For detailed architecture information, see [TECHNICAL.md](TECHNICAL.md).
 
 ---
 
-## Code Style
-
-### TypeScript
-
-- Use strict TypeScript (`strict: true` in tsconfig)
-- Prefer interfaces over type aliases for object shapes
-- Export types when they need to be shared
-- Use explicit return types for public functions
-
-```typescript
-// Good
-interface CardProps {
-  card: Card
-  onAnswer: (data: ModeAnswerData) => void
-}
-
-export function Card({ card, onAnswer }: CardProps): JSX.Element {
-  // ...
-}
-
-// Avoid
-export function Card(props: any) {
-  // ...
-}
-```
-
-### Component Guidelines
-
-- Use functional components with hooks
-- Keep components focused and single-purpose
-- Extract complex logic into custom hooks or utilities
-- Use descriptive prop names
-
-```typescript
-// Good - Clear, focused component
-export function MasteryBreakdown({ counts, total }: MasteryBreakdownProps) {
-  // Single responsibility: display mastery breakdown
-}
-
-// Avoid - Doing too much
-export function ProgressStuff({ everything }) {
-  // Multiple responsibilities mixed together
-}
-```
-
-### Tailwind CSS
-
-- Use Tailwind utility classes for styling
-- Follow the project's custom class conventions in `style.css`
-- Use the theme colors defined in `tailwind.config.js`
-
-```tsx
-// Good - Using theme colors and utilities
-<button className="btn-primary">Save</button>
-<div className="card-elevated p-4">Content</div>
-
-// Avoid - Inline styles or arbitrary values
-<button style={{ backgroundColor: '#0ea5e9' }}>Save</button>
-<div className="bg-[#f5f5f5]">Content</div>
-```
-
-### ESLint
-
-Run the linter before committing:
-
-```bash
-npm run lint        # Check for issues
-npm run lint:fix    # Auto-fix issues
-```
-
-ESLint rules are configured in `eslint.config.js`.
-
----
-
 ## Git Workflow
 
 ### Branch Naming
 
 Use descriptive branch names with prefixes:
 
-| Prefix | Use Case | Example |
-|--------|----------|---------|
-| `feature/` | New features | `feature/export-cards` |
-| `fix/` | Bug fixes | `fix/swipe-gesture-mobile` |
-| `refactor/` | Code improvements | `refactor/sm2-algorithm` |
-| `docs/` | Documentation | `docs/api-reference` |
-| `test/` | Test additions | `test/fill-in-heuristic` |
+| Prefix      | Use Case          | Example                    |
+| ----------- | ----------------- | -------------------------- |
+| `feature/`  | New features      | `feature/export-cards`     |
+| `fix/`      | Bug fixes         | `fix/swipe-gesture-mobile` |
+| `refactor/` | Code improvements | `refactor/sm2-algorithm`   |
+| `docs/`     | Documentation     | `docs/api-reference`       |
+| `test/`     | Test additions    | `test/fill-in-heuristic`   |
 
 ### Keeping Your Fork Updated
 
@@ -228,6 +151,7 @@ Follow the conventional commits format:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -285,91 +209,32 @@ git push origin feature/your-feature-name
 
 ```markdown
 ## Description
+
 Brief description of the changes.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## How Has This Been Tested?
+
 Describe the tests you ran.
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes.
 
 ## Checklist
+
 - [ ] My code follows the project's style guidelines
 - [ ] I have performed a self-review
 - [ ] I have added tests (if applicable)
 - [ ] My changes generate no new warnings
 - [ ] I have updated the documentation (if needed)
 ```
-
----
-
-## Testing
-
-### Running Tests
-
-```bash
-npm run test          # Watch mode
-npm run test:run      # Single run
-npm run test:coverage # With coverage report
-```
-
-### Writing Tests
-
-Tests are located alongside the code they test or in `__tests__` directories.
-
-```typescript
-// src/utils/myUtil.test.ts
-import { describe, it, expect } from 'vitest'
-import { myFunction } from './myUtil'
-
-describe('myFunction', () => {
-  it('should handle normal input', () => {
-    const result = myFunction('input')
-    expect(result).toBe('expected output')
-  })
-
-  it('should handle edge cases', () => {
-    expect(myFunction('')).toBe('')
-    expect(myFunction(null)).toBeNull()
-  })
-})
-```
-
-### What to Test
-
-- **Utility functions**: Test all edge cases
-- **SM-2 algorithm**: Ensure calculations are correct
-- **Fill-in heuristic**: Test word extraction logic
-- **Components**: Test user interactions (optional, we use happy-dom)
-
----
-
-## Reporting Issues
-
-### Bug Reports
-
-When reporting a bug, please include:
-
-1. **Description**: What happened vs. what you expected
-2. **Steps to Reproduce**: Detailed steps to reproduce the issue
-3. **Environment**: Browser, OS, screen size
-4. **Screenshots/Videos**: If applicable
-5. **Console Errors**: Any JavaScript errors in the console
-
-### Feature Requests
-
-For feature requests, please describe:
-
-1. **The Problem**: What need does this address?
-2. **Proposed Solution**: How do you envision it working?
-3. **Alternatives**: Any alternative solutions you considered?
-4. **Additional Context**: Mockups, examples, etc.
 
 ---
 

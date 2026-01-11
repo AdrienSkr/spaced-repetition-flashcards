@@ -25,7 +25,7 @@ PairWise Cards follows a component-based architecture with clear separation of c
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         App Shell                            │
+│                         App Shell                           │
 │  ┌─────────────┐  ┌─────────────────────┐  ┌─────────────┐  │
 │  │   TopBar    │  │    Main Content     │  │  BottomBar  │  │
 │  │  (Selector) │  │   (Page Router)     │  │   (Nav)     │  │
@@ -64,15 +64,15 @@ PairWise Cards follows a component-based architecture with clear separation of c
 
 ## Technology Stack
 
-| Layer | Technology | Rationale |
-|-------|------------|-----------|
-| **UI Framework** | Preact 10.23 | 3KB React alternative, same API |
-| **Language** | TypeScript 5.5 | Type safety, better DX |
-| **Styling** | Tailwind CSS 3.4 | Utility-first, no CSS files |
-| **Database** | Dexie 4.0 | IndexedDB wrapper with React hooks |
-| **Build** | Vite 5.4 | Fast HMR, optimized builds |
-| **Testing** | Vitest | Vite-native, fast execution |
-| **Linting** | ESLint 9 | Code quality enforcement |
+| Layer            | Technology       | Rationale                          |
+| ---------------- | ---------------- | ---------------------------------- |
+| **UI Framework** | Preact 10.23     | 3KB React alternative, same API    |
+| **Language**     | TypeScript 5.5   | Type safety, better DX             |
+| **Styling**      | Tailwind CSS 3.4 | Utility-first, no CSS files        |
+| **Database**     | Dexie 4.0        | IndexedDB wrapper with React hooks |
+| **Build**        | Vite 5.4         | Fast HMR, optimized builds         |
+| **Testing**      | Vitest           | Vite-native, fast execution        |
+| **Linting**      | ESLint 9         | Code quality enforcement           |
 
 ---
 
@@ -161,10 +161,10 @@ src/
 
 ```typescript
 interface Card extends SM2CardData {
-  id?: number          // Auto-generated primary key
-  question: string     // Front of the card
-  answer: string       // Back of the card
-  listId: number       // Foreign key to List
+  id?: number // Auto-generated primary key
+  question: string // Front of the card
+  answer: string // Back of the card
+  listId: number // Foreign key to List
 }
 ```
 
@@ -176,7 +176,7 @@ type ToleranceLevel = 'exact' | 'tolerant80' | 'tolerant60'
 interface List {
   id?: number
   title: string
-  toleranceLevel?: ToleranceLevel  // Answer validation strictness
+  toleranceLevel?: ToleranceLevel // Answer validation strictness
 }
 ```
 
@@ -184,13 +184,13 @@ interface List {
 
 ```typescript
 interface SM2CardData {
-  repetitions: number      // Consecutive correct responses
-  easinessFactor: number   // Difficulty multiplier (default: 2.5)
-  interval: number         // Days until next review
-  nextReview: number       // Timestamp of next scheduled review
-  lastReviewed: number     // Timestamp of last review
-  totalReviews: number     // Lifetime review count
-  correctStreak: number    // Current streak of correct answers
+  repetitions: number // Consecutive correct responses
+  easinessFactor: number // Difficulty multiplier (default: 2.5)
+  interval: number // Days until next review
+  nextReview: number // Timestamp of next scheduled review
+  lastReviewed: number // Timestamp of last review
+  totalReviews: number // Lifetime review count
+  correctStreak: number // Current streak of correct answers
 }
 ```
 
@@ -245,10 +245,11 @@ Using `useLiveQuery` from `dexie-react-hooks`:
 
 ```typescript
 const cards = useLiveQuery(
-  () => selectedListId === 0
-    ? db.cards.toArray()
-    : db.cards.where({ listId: selectedListId }).toArray(),
-  [selectedListId]
+  () =>
+    selectedListId === 0
+      ? db.cards.toArray()
+      : db.cards.where({ listId: selectedListId }).toArray(),
+  [selectedListId],
 )
 ```
 
@@ -287,11 +288,11 @@ function calculateSM2(
 
 ### Quality Rating by Mode
 
-| Mode | Correct Answer | Wrong Answer |
-|------|----------------|--------------|
-| **Typing** | Q3-5 based on response time | Q1 |
-| **Swipe** | Q5 (self-assessed) | Q1 |
-| **Fill-in** | Q2-5 based on % correct blanks | Q1 |
+| Mode        | Correct Answer                 | Wrong Answer |
+| ----------- | ------------------------------ | ------------ |
+| **Typing**  | Q3-5 based on response time    | Q1           |
+| **Swipe**   | Q5 (self-assessed)             | Q1           |
+| **Fill-in** | Q2-5 based on % correct blanks | Q1           |
 
 ### Mastery Levels
 
@@ -318,16 +319,16 @@ Automatically extract key words from answers to create fill-in-the-blank exercis
 
 Words are scored based on multiple factors:
 
-| Factor | Weight | Description |
-|--------|--------|-------------|
-| Proper noun | 4-6 | Capitalized words (not at sentence start) |
-| Numbers/dates | 3 | Contains digits |
-| Technical term | 2-3 | Long or uncommon words |
-| Quoted word | 3 | Surrounded by quotes |
-| All caps (acronym) | 3 | e.g., "NASA", "API" |
-| Position | 0-2 | End of sentence scores higher |
-| Length bonus | 1-2 | Longer words preferred |
-| Short word penalty | -1 | Words ≤ 3 chars |
+| Factor             | Weight | Description                               |
+| ------------------ | ------ | ----------------------------------------- |
+| Proper noun        | 4-6    | Capitalized words (not at sentence start) |
+| Numbers/dates      | 3      | Contains digits                           |
+| Technical term     | 2-3    | Long or uncommon words                    |
+| Quoted word        | 3      | Surrounded by quotes                      |
+| All caps (acronym) | 3      | e.g., "NASA", "API"                       |
+| Position           | 0-2    | End of sentence scores higher             |
+| Length bonus       | 1-2    | Longer words preferred                    |
+| Short word penalty | -1     | Words ≤ 3 chars                           |
 
 ### Word Selection
 
@@ -345,8 +346,8 @@ function extractKeyWords(text: string, maxBlanks: number = 3): BlankWord[] {
 
 ```typescript
 interface FillInResult {
-  textWithBlanks: string   // "The capital is ___[1]___"
-  blanks: BlankWord[]      // [{ word: "Paris", startIndex: 15, endIndex: 20 }]
+  textWithBlanks: string // "The capital is ___[1]___"
+  blanks: BlankWord[] // [{ word: "Paris", startIndex: 15, endIndex: 20 }]
   originalText: string
 }
 ```
@@ -362,7 +363,7 @@ Manages the currently selected deck across pages.
 ```typescript
 interface ListSelectorContextType {
   lists: List[]
-  selectedListId: number  // 0 = "All Cards"
+  selectedListId: number // 0 = "All Cards"
   setSelectedListId: (id: number) => void
   setLists: (lists: List[]) => void
 }
@@ -454,7 +455,7 @@ Persistent via `localStorage.pairwise_onboarding_test_mode`.
 ```typescript
 import { devLog } from './utils/devMode'
 
-devLog.log('[Module] Message')  // Only logs in DEV mode
+devLog.log('[Module] Message') // Only logs in DEV mode
 devLog.warn('[Module] Warning')
 ```
 
@@ -485,7 +486,7 @@ import { extractKeyWords, generateFillInBlanks } from './fillInHeuristic'
 describe('extractKeyWords', () => {
   it('should extract proper nouns', () => {
     const result = extractKeyWords('Naruto Uzumaki is a ninja')
-    expect(result.some(w => w.word === 'Uzumaki')).toBe(true)
+    expect(result.some((w) => w.word === 'Uzumaki')).toBe(true)
   })
 })
 ```
@@ -508,6 +509,7 @@ npm run build
 ```
 
 Vite optimizations:
+
 - Tree shaking (removes DevToolbar in prod)
 - Code splitting
 - Asset optimization
@@ -523,7 +525,7 @@ Configuration in `vite.config.ts`:
 
 ```typescript
 export default defineConfig({
-  base: '/pairWise-Cards/',  // For GitHub Pages subdirectory
+  base: '/pairWise-Cards/', // For GitHub Pages subdirectory
   plugins: [preact()],
 })
 ```
@@ -548,16 +550,3 @@ export default defineConfig({
 - Component-level state management (no global store)
 - Conditional rendering for modals
 - CSS animations via Tailwind (`animate-fade-in`)
-
----
-
-## Future Improvements
-
-Potential technical enhancements:
-
-1. **Service Worker** - Full offline PWA support
-2. **Data Export** - JSON/CSV export functionality
-3. **Cloud Sync** - Optional backend for cross-device sync
-4. **WebLLM Integration** - Smarter fill-in blank generation
-5. **Undo/Redo** - Action history for card management
-6. **Keyboard Shortcuts** - Power user navigation

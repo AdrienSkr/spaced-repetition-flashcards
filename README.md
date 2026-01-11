@@ -1,6 +1,6 @@
 # PairWise Cards
 
-A modern flashcard application with spaced repetition learning, built with Preact and TypeScript.
+A simple flashcard application with spaced repetition learning, built with Preact and TypeScript.
 
 [![Deploy to GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-blue)](https://baddsu51.github.io/pairWise-Cards/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
@@ -16,26 +16,31 @@ PairWise Cards is a flashcard learning application that uses the **SM-2 spaced r
 ## Features
 
 - **Three Learning Modes**
+
   - **Typing Mode**: Type your answer and get instant feedback with tolerance settings
   - **Swipe Mode**: Quick self-assessment by swiping left (don't know) or right (know)
   - **Fill-in Mode**: Automatically generated blanks to fill in key words
 
 - **SM-2 Spaced Repetition Algorithm**
+
   - Scientifically proven algorithm for optimal memory retention
   - Automatic scheduling of card reviews
   - Adaptive difficulty based on your performance
 
 - **Deck Management**
+
   - Create and organize multiple decks
   - Import cards from CSV, JSON, or TSV files
   - Configurable tolerance levels per deck
 
 - **Progress Tracking**
+
   - Visual mastery breakdown (New, Learning, Reviewing, Mastered)
   - Statistics dashboard with cards due and mastery percentage
   - Detailed learning stats
 
 - **Free Practice Mode**
+
   - Review cards without affecting your progress
   - Practice upcoming cards (1-30 days ahead)
 
@@ -48,7 +53,7 @@ PairWise Cards is a flashcard learning application that uses the **SM-2 spaced r
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
@@ -85,51 +90,34 @@ npm run deploy
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
-| `npm run deploy` | Deploy to GitHub Pages |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint issues automatically |
-| `npm run test` | Run tests in watch mode |
-| `npm run test:run` | Run tests once |
-| `npm run test:coverage` | Run tests with coverage report |
+| Script                  | Description                              |
+| ----------------------- | ---------------------------------------- |
+| `npm run dev`           | Start development server with hot reload |
+| `npm run build`         | Build for production                     |
+| `npm run preview`       | Preview production build locally         |
+| `npm run deploy`        | Deploy to GitHub Pages                   |
+| `npm run lint`          | Run ESLint                               |
+| `npm run lint:fix`      | Fix ESLint issues automatically          |
+| `npm run test`          | Run tests in watch mode                  |
+| `npm run test:run`      | Run tests once                           |
+| `npm run test:coverage` | Run tests with coverage report           |
 
 ## Tech Stack
 
-| Technology | Purpose |
-|------------|---------|
-| [Preact](https://preactjs.com/) | UI framework (lightweight React alternative) |
-| [TypeScript](https://www.typescriptlang.org/) | Type-safe JavaScript |
-| [Tailwind CSS](https://tailwindcss.com/) | Utility-first CSS framework |
-| [Dexie.js](https://dexie.org/) | IndexedDB wrapper for local storage |
-| [Vite](https://vitejs.dev/) | Fast build tool and dev server |
-| [Vitest](https://vitest.dev/) | Unit testing framework |
+| Technology                                    | Purpose                                      |
+| --------------------------------------------- | -------------------------------------------- |
+| [Preact](https://preactjs.com/)               | UI framework (lightweight React alternative) |
+| [TypeScript](https://www.typescriptlang.org/) | Type-safe JavaScript                         |
+| [Tailwind CSS](https://tailwindcss.com/)      | Utility-first CSS framework                  |
+| [Dexie.js](https://dexie.org/)                | IndexedDB wrapper for local storage          |
+| [Vite](https://vitejs.dev/)                   | Fast build tool and dev server               |
+| [Vitest](https://vitest.dev/)                 | Unit testing framework                       |
 
 ## Documentation
 
 - [User Guide](docs/USER_GUIDE.md) - How to use the application
 - [Technical Documentation](docs/TECHNICAL.md) - Architecture and implementation details
 - [Contributing Guide](docs/CONTRIBUTING.md) - How to contribute to the project
-
-## Project Structure
-
-```
-src/
-├── components/          # UI components
-│   ├── BottomBar/      # Navigation bar
-│   ├── Modals/         # Modal dialogs
-│   ├── Page/           # Page components (Learning, Collection, Progress)
-│   ├── Progress/       # Progress-related components
-│   ├── shared/         # Reusable components
-│   └── TopBar/         # Header with deck selector
-├── contexts/           # React contexts
-├── models/             # Data models and database
-├── utils/              # Utility functions (SM-2, Levenshtein, etc.)
-└── assets/             # SVG icons and images
-```
 
 ## How It Works
 
@@ -139,6 +127,7 @@ src/
 4. **Progress** - The SM-2 algorithm optimizes your review schedule automatically
 
 Cards progress through mastery levels:
+
 - **New** - Never reviewed
 - **Learning** - 1-2 correct answers
 - **Reviewing** - 3+ correct answers, interval < 21 days
@@ -147,6 +136,7 @@ Cards progress through mastery levels:
 ## Browser Support
 
 PairWise Cards uses IndexedDB for local storage and works in all modern browsers:
+
 - Chrome 80+
 - Firefox 75+
 - Safari 14+
