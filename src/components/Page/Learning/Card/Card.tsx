@@ -23,17 +23,16 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
   const [isCorrect, setIsCorrect] = useState<boolean>(false)
   const [animationClass, setAnimationClass] = useState<string>('')
   const startTimeRef = useRef<number>(Date.now())
-  
-  // Modal states
+
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [cardToEdit, setCardToEdit] = useState<CardType | null>(null)
 
-  // Get tolerance level from deck settings
   const toleranceLevel = selectedList?.toleranceLevel || 'exact'
-
-  // Get mastery level for visual indicator
-  const masteryLevel = getMasteryLevel(card.repetitions || 0, card.interval || 0)
+  const masteryLevel = getMasteryLevel(
+    card.repetitions || 0,
+    card.interval || 0,
+  )
   const masteryColors = {
     new: 'bg-mastery-new',
     learning: 'bg-mastery-learning',
@@ -42,30 +41,25 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
   }
 
   useEffect(() => {
-    // Focus appropriate element
     if (isAnswered) {
-      const element = document.getElementById('card')
-      if (element) element.focus()
+      document.getElementById('card')?.focus()
     } else {
-      const element = document.getElementById('input')
-      if (element) element.focus()
+      document.getElementById('input')?.focus()
     }
   }, [isAnswered])
 
-  // Reset state when card changes
   useEffect(() => {
     setInput('')
     setIsAnswered(false)
     setIsCorrect(false)
     setAnimationClass('')
-    startTimeRef.current = Date.now() // Reset timer for new card
+    startTimeRef.current = Date.now()
   }, [card.id])
 
   const handleKeyDown = (
     event: JSX.TargetedKeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === 'Enter' && input.trim()) {
-      // Use tolerance-based validation from deck settings
       const correct = isAnswerCorrect(input, card.answer, toleranceLevel)
       setIsAnswered(true)
       setIsCorrect(correct)
@@ -75,25 +69,13 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
 
   const changeCard = () => {
     const responseTimeMs = Date.now() - startTimeRef.current
-    onAnswer(card, {
-      isCorrect,
-      responseTimeMs
-    })
+    onAnswer(card, { isCorrect, responseTimeMs })
   }
 
   const onKeyDownCard = (event: JSX.TargetedKeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
       changeCard()
     }
-  }
-
-  const handleAddCard = () => {
-    setShowAddModal(true)
-  }
-
-  const handleEditCard = (cardToEdit: CardType) => {
-    setCardToEdit(cardToEdit)
-    setShowEditModal(true)
   }
 
   return (
@@ -105,63 +87,94 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
         tabIndex={0}
         class={`
           relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
-          rounded-3xl bg-surface-card p-12 shadow-glow 
-          transition-all duration-300 
-          hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-400 
+          rounded-lg bg-surface-card p-8 shadow-lg 
+          transition-all duration-normal 
+          hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-400 
           ${isAnswered ? 'cursor-pointer active:scale-[0.99]' : ''}
           ${animationClass}
         `}
       >
         {/* Mastery indicator */}
         <div class="absolute left-4 top-4">
-          <div class={`size-3 rounded-full ${masteryColors[masteryLevel]}`} 
-               title={`Mastery: ${masteryLevel}`} />
+          <div
+            class={`size-3 rounded-full ${masteryColors[masteryLevel]}`}
+            title={`Mastery: ${masteryLevel}`}
+          />
         </div>
 
         {/* Mode indicator */}
-        <div class="absolute right-4 top-4 text-xs uppercase tracking-wide text-primary-500">
+        <div class="absolute right-4 top-4 text-xs uppercase tracking-wide text-brand-500">
           Typing
         </div>
 
-        <ActionBar 
+        <ActionBar
           card={card}
           listId={listId}
-          onAddCard={handleAddCard}
-          onEditCard={handleEditCard}
+          onAddCard={() => setShowAddModal(true)}
+          onEditCard={(c) => {
+            setCardToEdit(c)
+            setShowEditModal(true)
+          }}
         />
-        
+
         {isAnswered ? (
           <div class="flex animate-fade-in flex-col items-center gap-6">
             {isCorrect ? (
               <>
-                <div class="mb-2 flex size-16 items-center justify-center rounded-full bg-success-light">
-                  <svg class="size-10 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <div class="mb-2 icon-container rounded-lg bg-success-light p-4">
+                  <svg
+                    class="size-10 text-success"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
-                <h4 class="text-3xl font-bold text-success">{input}</h4>
+                <h4 class="text-2xl font-semibold text-success">{input}</h4>
               </>
             ) : (
               <>
-                <div class="mb-2 flex size-16 items-center justify-center rounded-full bg-error-light">
-                  <svg class="size-10 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <div class="mb-2 icon-container rounded-lg bg-error-light p-4">
+                  <svg
+                    class="size-10 text-error"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </div>
                 <div class="text-center">
-                  <p class="mb-1 text-sm text-gray-500">Correct answer:</p>
-                  <h3 class="mb-4 text-2xl font-bold text-gray-900">{card.answer}</h3>
+                  <p class="mb-1 text-sm text-neutral-500">Correct answer:</p>
+                  <h3 class="mb-4 text-xl font-semibold text-neutral-900">
+                    {card.answer}
+                  </h3>
                   <p class="text-lg text-error line-through">{input}</p>
                 </div>
               </>
             )}
-            <p class="mt-4 text-sm text-gray-400">
-              Press <kbd class="rounded bg-gray-100 px-2 py-1 text-xs">Enter</kbd> or click to continue
+            <p class="mt-4 text-sm text-neutral-400">
+              Press{' '}
+              <kbd class="rounded-md bg-neutral-100 px-2 py-1 text-xs">
+                Enter
+              </kbd>{' '}
+              or click to continue
             </p>
           </div>
         ) : (
-          <div class="flex w-full max-w-lg flex-col items-center gap-10">
-            <h3 class="text-center text-2xl font-bold leading-relaxed text-gray-900 md:text-3xl">
+          <div class="flex w-full max-w-lg flex-col items-center gap-8">
+            <h3 class="text-center text-xl font-semibold leading-relaxed text-neutral-900 md:text-2xl">
               {card.question}
             </h3>
             <input
@@ -177,7 +190,6 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
         )}
       </div>
 
-      {/* Add Card Modal */}
       <Modal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -194,7 +206,6 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
         />
       </Modal>
 
-      {/* Edit Card Modal */}
       <Modal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
@@ -219,4 +230,3 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
     </>
   )
 }
-

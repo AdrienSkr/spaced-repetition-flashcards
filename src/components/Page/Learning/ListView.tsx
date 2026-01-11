@@ -30,51 +30,38 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   } = useLearningContext()
   const [startTime, setStartTime] = useState<number>(Date.now())
   const [retryQueue, setRetryQueue] = useState<number[]>([])
-  // Track reviewed cards in free practice mode (local state, not persisted)
   const [freePracticeReviewedIds, setFreePracticeReviewedIds] = useState<
     Set<number>
   >(new Set())
-  // Days ahead selector state
   const [selectedDaysAhead, setSelectedDaysAhead] = useState<number>(1)
 
-  // Reset retry queue and free practice state when list changes
   useEffect(() => {
     setRetryQueue([])
     setFreePracticeReviewedIds(new Set())
   }, [list.id])
 
-  // Reset free practice reviewed cards when mode changes
   useEffect(() => {
     if (!isFreePractice) {
       setFreePracticeReviewedIds(new Set())
     }
   }, [isFreePractice])
 
-  // Fetch cards that are due for review
   const cards = useLiveQuery(async () => {
-    // If list.id === 0, fetch all cards, otherwise filter by listId
     const allCards =
       list.id === 0
         ? await db.cards.toArray()
         : await db.cards.where({ listId: list.id }).toArray()
 
-    // Sort by: due cards first, then by nextReview date
     return allCards.sort((a, b) => {
       const aDue = isDue(a.nextReview || 0)
       const bDue = isDue(b.nextReview || 0)
-
       if (aDue && !bDue) return -1
       if (!aDue && bDue) return 1
-
-      // Both due or both not due - sort by nextReview
       return (a.nextReview || 0) - (b.nextReview || 0)
     })
   }, [list.id])
 
-  // Filter to get only due cards
   const dueCards = cards?.filter((card) => isDue(card.nextReview || 0)) || []
-
-  // Filter retry cards (cards in retryQueue that are not already in dueCards)
   const dueCardIds = new Set(
     dueCards.map((card) => card.id).filter((id): id is number => !!id),
   )
@@ -84,19 +71,14 @@ export function ListView({ list, onAddCard }: ListViewProps) {
         card.id && retryQueue.includes(card.id) && !dueCardIds.has(card.id),
     ) || []
 
-  // Free practice mode: get cards based on mode
   const getFreePracticeCards = (): CardType[] => {
     if (!cards || freePracticeMode === 'off') return []
-
     if (freePracticeMode === 'all') {
-      // All cards, excluding already reviewed in this session
       return cards.filter(
         (card) => card.id && !freePracticeReviewedIds.has(card.id),
       )
     }
-
     if (freePracticeMode === 'future') {
-      // Cards scheduled for the next X days
       const now = Date.now()
       const futureLimit = now + freePracticeDaysAhead * 24 * 60 * 60 * 1000
       return cards.filter(
@@ -108,30 +90,24 @@ export function ListView({ list, onAddCard }: ListViewProps) {
           card.nextReview <= futureLimit,
       )
     }
-
     return []
   }
 
   const freePracticeCards = getFreePracticeCards()
-
-  // Select current card: prioritize due cards, then retry cards, then free practice cards
   const currentCard = isFreePractice
     ? freePracticeCards[0]
     : dueCards[0] || retryCards[0]
 
-  // Reset timer when card changes
   const handleCardShow = () => {
     setStartTime(Date.now())
   }
 
   async function onAnswer(card: CardType, answerData: ModeAnswerData) {
-    // Add response time for typing mode if not already provided
     const dataWithTime: ModeAnswerData = {
       ...answerData,
       responseTimeMs: answerData.responseTimeMs ?? Date.now() - startTime,
     }
 
-    // In free practice mode, don't save to database - just move to next card
     if (isFreePractice) {
       if (card.id) {
         setFreePracticeReviewedIds((prev) => new Set([...prev, card.id!]))
@@ -140,10 +116,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
       return
     }
 
-    // Calculate quality based on the current learning mode
     const quality = getQualityForMode(learningMode, dataWithTime)
-
-    // Calculate new SM-2 values
     const result = calculateSM2(
       quality,
       card.repetitions || 0,
@@ -151,7 +124,6 @@ export function ListView({ list, onAddCard }: ListViewProps) {
       card.interval || 0,
     )
 
-    // Update card in database
     if (card.id) {
       await db.cards.update(card.id, {
         repetitions: result.repetitions,
@@ -163,67 +135,46 @@ export function ListView({ list, onAddCard }: ListViewProps) {
         correctStreak: dataWithTime.isCorrect
           ? (card.correctStreak || 0) + 1
           : 0,
-        // Keep legacy fields updated for compatibility
         delay: result.interval,
         count: result.repetitions,
       })
 
-      // Manage retry queue: add incorrect cards, remove correct ones
       if (!dataWithTime.isCorrect) {
-        // Add to retry queue if not already present
         setRetryQueue((prev) =>
           prev.includes(card.id!) ? prev : [...prev, card.id!],
         )
       } else {
-        // Remove from retry queue if answered correctly
         setRetryQueue((prev) => prev.filter((id) => id !== card.id))
       }
     }
 
-    // Reset timer for next card
     handleCardShow()
   }
 
   if (!cards) {
     return (
       <div class="flex min-h-[60vh] items-center justify-center">
-        <div class="animate-pulse text-primary-500">Loading...</div>
+        <div class="animate-pulse text-brand-500">Loading...</div>
       </div>
     )
   }
 
-  // Empty deck state - no cards at all
   if (cards.length === 0) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
-        <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-primary-100">
-          <Icon name="empty-box" size={48} color="#8b5cf6" />
+        <div class="mb-6 icon-container rounded-lg bg-brand-100 p-4">
+          <Icon name="empty-box" size={48} color="#0ea5e9" />
         </div>
-        <h2 class="mb-2 text-2xl font-bold text-gray-900">
+        <h2 class="mb-2 text-xl font-semibold text-neutral-900">
           This deck is empty
         </h2>
-        <p class="mb-6 max-w-md text-gray-600">
+        <p class="mb-6 max-w-md text-neutral-600">
           Add some cards to start learning. You can create flashcards with
           questions and answers.
         </p>
         {onAddCard && (
-          <button
-            onClick={onAddCard}
-            class="btn-primary flex items-center gap-2"
-          >
-            <svg
-              class="size-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
+          <button onClick={onAddCard} class="btn-primary">
+            <Icon name="plus" size={20} />
             Add Your First Card
           </button>
         )}
@@ -231,7 +182,6 @@ export function ListView({ list, onAddCard }: ListViewProps) {
     )
   }
 
-  // Count future cards for the "future" mode
   const getFutureCardsCount = (days: number): number => {
     if (!cards) return 0
     const now = Date.now()
@@ -244,22 +194,20 @@ export function ListView({ list, onAddCard }: ListViewProps) {
     ).length
   }
 
-  // All cards reviewed - deck has cards but none are due and no retry cards
   const totalRemaining = dueCards.length + retryCards.length
 
-  // Handle end of free practice session
   if (isFreePractice && freePracticeCards.length === 0) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
-        <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-primary-100">
-          <Icon name="celebration" size={48} color="#8b5cf6" />
+        <div class="mb-6 icon-container rounded-lg bg-brand-100 p-4">
+          <Icon name="celebration" size={48} color="#0ea5e9" />
         </div>
-        <h2 class="mb-2 text-2xl font-bold text-gray-900">
+        <h2 class="mb-2 text-xl font-semibold text-neutral-900">
           Practice complete!
         </h2>
-        <p class="mb-6 max-w-md text-gray-600">
+        <p class="mb-6 max-w-md text-neutral-600">
           You've finished your free practice session.
-          <span class="mt-2 block text-sm text-gray-500">
+          <span class="mt-2 block text-sm text-neutral-500">
             {freePracticeReviewedIds.size} card
             {freePracticeReviewedIds.size > 1 ? 's' : ''} reviewed (no progress
             saved)
@@ -275,14 +223,16 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   if (totalRemaining === 0 && !isFreePractice) {
     return (
       <div class="flex min-h-[60vh] animate-fade-in flex-col items-center justify-center text-center">
-        <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-success-light">
+        <div class="mb-6 icon-container rounded-lg bg-success-light p-4">
           <Icon name="celebration" size={48} color="#22c55e" />
         </div>
-        <h2 class="mb-2 text-2xl font-bold text-gray-900">All caught up!</h2>
-        <p class="max-w-md text-gray-600">
+        <h2 class="mb-2 text-xl font-semibold text-neutral-900">
+          All caught up!
+        </h2>
+        <p class="max-w-md text-neutral-600">
           You've reviewed all cards due for today. Great job!
           {cards.length > 0 && (
-            <span class="mt-2 block text-sm text-primary-600">
+            <span class="mt-2 block text-sm text-brand-600">
               Next review: {getNextReviewText(cards)}
             </span>
           )}
@@ -290,23 +240,22 @@ export function ListView({ list, onAddCard }: ListViewProps) {
 
         {/* Free practice options */}
         <div class="mt-8 w-full max-w-sm space-y-4">
-          <p class="text-sm font-medium text-gray-500">
+          <p class="text-sm font-medium text-neutral-500">
             Want to keep practicing?
           </p>
 
-          {/* Review all cards */}
           <button
             onClick={() => startFreePractice('all')}
-            class="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-left transition-colors hover:border-primary-300 hover:bg-primary-50"
+            class="card-interactive flex w-full items-center justify-between px-4 py-3 text-left"
           >
             <div>
-              <span class="font-medium text-gray-900">Review all cards</span>
-              <span class="ml-2 text-sm text-gray-500">
+              <span class="font-medium text-neutral-900">Review all cards</span>
+              <span class="ml-2 text-sm text-neutral-500">
                 ({cards.length} cards)
               </span>
             </div>
             <svg
-              class="size-5 text-gray-400"
+              class="size-5 text-neutral-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -320,21 +269,20 @@ export function ListView({ list, onAddCard }: ListViewProps) {
             </svg>
           </button>
 
-          {/* Review future cards */}
-          <div class="rounded-lg border border-gray-200 bg-white">
+          <div class="card-elevated">
             <div class="flex items-center justify-between px-4 py-3">
               <div>
-                <span class="font-medium text-gray-900">
+                <span class="font-medium text-neutral-900">
                   Review upcoming cards
                 </span>
-                <span class="ml-2 text-sm text-gray-500">
+                <span class="ml-2 text-sm text-neutral-500">
                   ({getFutureCardsCount(selectedDaysAhead)} cards)
                 </span>
               </div>
             </div>
-            <div class="border-t border-gray-100 px-4 py-3">
+            <div class="border-t border-neutral-100 px-4 py-3">
               <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-600">Next</span>
+                <span class="text-sm text-neutral-600">Next</span>
                 <select
                   value={selectedDaysAhead}
                   onChange={(e) =>
@@ -342,7 +290,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
                       Number((e.target as HTMLSelectElement).value),
                     )
                   }
-                  class="rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  class="input w-auto py-1 text-sm"
                 >
                   <option value={1}>1 day</option>
                   <option value={3}>3 days</option>
@@ -353,7 +301,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
                 <button
                   onClick={() => startFreePractice('future', selectedDaysAhead)}
                   disabled={getFutureCardsCount(selectedDaysAhead) === 0}
-                  class="ml-auto rounded-md bg-primary-500 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  class="btn-primary ml-auto py-1 text-sm"
                 >
                   Start
                 </button>
@@ -361,7 +309,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
             </div>
           </div>
 
-          <p class="text-xs text-gray-400">
+          <p class="text-xs text-neutral-400">
             Free practice doesn't affect your progress or the SM2 algorithm.
           </p>
         </div>
@@ -369,7 +317,6 @@ export function ListView({ list, onAddCard }: ListViewProps) {
     )
   }
 
-  // Calculate remaining cards based on mode
   const remainingCount = isFreePractice
     ? freePracticeCards.length
     : totalRemaining
@@ -378,7 +325,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
     <div class="animate-fade-in">
       {/* Free practice banner */}
       {isFreePractice && (
-        <div class="mb-4 flex items-center justify-between rounded-lg bg-amber-50 px-4 py-2 text-amber-800">
+        <div class="mb-4 flex items-center justify-between rounded-lg bg-warning-light px-4 py-2 text-warning">
           <div class="flex items-center gap-2">
             <svg
               class="size-5"
@@ -401,13 +348,11 @@ export function ListView({ list, onAddCard }: ListViewProps) {
                 })`}
               {freePracticeMode === 'all' && ' (all cards)'}
             </span>
-            <span class="text-xs text-amber-600">
-              – Progress won't be saved
-            </span>
+            <span class="text-xs">– Progress won't be saved</span>
           </div>
           <button
             onClick={stopFreePractice}
-            class="rounded px-2 py-1 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
+            class="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-fast hover:bg-warning/20"
           >
             Exit
           </button>
@@ -415,11 +360,11 @@ export function ListView({ list, onAddCard }: ListViewProps) {
       )}
 
       {/* Progress indicator */}
-      <div class="mb-4 flex items-center justify-center gap-4 text-sm text-gray-500">
+      <div class="mb-4 flex items-center justify-center gap-4 text-sm text-neutral-500">
         <span>
           {remainingCount} card{remainingCount > 1 ? 's' : ''} remaining
           {isFreePractice && freePracticeReviewedIds.size > 0 && (
-            <span class="ml-2 text-gray-400">
+            <span class="ml-2 text-neutral-400">
               ({freePracticeReviewedIds.size} reviewed)
             </span>
           )}
@@ -442,12 +387,8 @@ function getNextReviewText(cards: CardType[]): string {
     (c) => c.nextReview && c.nextReview > Date.now(),
   )
   if (futureCards.length === 0) return 'No upcoming reviews'
-
   const nextCard = futureCards.sort(
     (a, b) => (a.nextReview || 0) - (b.nextReview || 0),
   )[0]
-  const nextReviewTime = nextCard.nextReview || 0
-
-  // Use the SM2 utility function to format the timestamp
-  return getNextReviewTextFromSM2(nextReviewTime)
+  return getNextReviewTextFromSM2(nextCard.nextReview || 0)
 }

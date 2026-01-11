@@ -17,26 +17,22 @@ type NavItemProps = {
 }
 
 function NavItem({ icon, label, page, isActive, onClick }: NavItemProps) {
-  const handleClick = () => {
-    onClick(page)
-  }
-
   return (
     <div
       className={`nav-item group ${isActive ? 'nav-item-active' : ''}`}
-      onClick={handleClick}
+      onClick={() => onClick(page)}
     >
       <div className={`nav-icon ${isActive ? 'nav-icon-active' : ''}`}>
         <img
           src={icon}
           alt={label}
-          className="size-full transition-all duration-200 group-hover:scale-110"
+          className="size-full transition-all duration-fast group-hover:scale-110"
         />
       </div>
-      <span className={`text-xs transition-all duration-200 ${
+      <span className={`text-xs transition-all duration-fast ${
         isActive 
-          ? 'font-medium text-primary-700' 
-          : 'font-light group-hover:font-normal group-hover:text-primary-600'
+          ? 'font-medium text-brand-700' 
+          : 'font-normal text-neutral-500 group-hover:text-brand-600'
       }`}>
         {label}
       </span>
@@ -45,10 +41,9 @@ function NavItem({ icon, label, page, isActive, onClick }: NavItemProps) {
 }
 
 export function BottomBar({ currentPage, setCurrentPage }: Props) {
-
   return (
-    <div className="glass fixed inset-x-0 bottom-0 z-40 flex h-20 w-full items-center justify-center border-t border-primary-100 bg-white/80 shadow-lg">
-      <div className="flex space-x-16">
+    <div className="glass fixed inset-x-0 bottom-0 z-40 flex h-20 w-full items-center justify-center border-t border-neutral-200 shadow-md">
+      <div className="flex gap-16">
         <NavItem 
           icon={LearnIcon} 
           label="Learning" 

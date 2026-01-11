@@ -73,9 +73,7 @@ export function DeckSettingsModalContent({
     <form onSubmit={handleSubmit} class="space-y-6">
       {/* Deck Name */}
       <div>
-        <label class="mb-2 block text-sm font-medium text-gray-700">
-          Deck Name
-        </label>
+        <label class="label">Deck Name</label>
         <input
           type="text"
           value={title}
@@ -90,10 +88,8 @@ export function DeckSettingsModalContent({
 
       {/* Tolerance Level */}
       <div>
-        <label class="mb-3 block text-sm font-medium text-gray-700">
-          Answer Tolerance
-        </label>
-        <p class="mb-4 text-sm text-gray-500">
+        <label class="label">Answer Tolerance</label>
+        <p class="mb-4 text-sm text-neutral-500">
           How strict should the answer validation be for Typing and Fill-in
           modes?
         </p>
@@ -101,11 +97,11 @@ export function DeckSettingsModalContent({
           {toleranceOptions.map((option) => (
             <label
               key={option}
-              class={`flex cursor-pointer items-center rounded-xl border-2 p-4 transition-all duration-200 
+              class={`flex cursor-pointer items-center rounded-lg border-2 p-4 transition-all duration-fast 
                 ${
                   toleranceLevel === option
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 hover:border-primary-200 hover:bg-gray-50'
+                    ? 'border-brand-500 bg-brand-50'
+                    : 'border-neutral-200 hover:border-brand-200 hover:bg-neutral-50'
                 }`}
             >
               <input
@@ -117,16 +113,16 @@ export function DeckSettingsModalContent({
                 class="sr-only"
               />
               <div class="flex-1">
-                <span class="font-medium text-gray-900">
+                <span class="font-medium text-neutral-900">
                   {getToleranceLabel(option)}
                 </span>
-                <p class="mt-0.5 text-sm text-gray-500">
+                <p class="mt-0.5 text-sm text-neutral-500">
                   {getToleranceDesc(option)}
                 </p>
               </div>
               {toleranceLevel === option && (
                 <svg
-                  class="size-5 text-primary-500"
+                  class="size-5 text-brand-500"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -151,7 +147,7 @@ export function DeckSettingsModalContent({
         <button
           type="submit"
           disabled={isSubmitting || !hasChanges}
-          class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+          class="btn-primary"
         >
           {isSubmitting ? 'Saving...' : 'Save Settings'}
         </button>

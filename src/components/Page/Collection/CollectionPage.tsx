@@ -61,7 +61,6 @@ export function CollectionPage() {
 
   const handleImportSuccess = (count: number) => {
     setShowImport(false)
-    // Could add a toast notification here
     console.log(`${count} carte(s) importée(s) avec succès`)
   }
 
@@ -73,22 +72,22 @@ export function CollectionPage() {
           {/* Stats */}
           <div class="flex items-center gap-6">
             <div class="flex items-center gap-2">
-              <div class="flex size-10 items-center justify-center rounded-full bg-primary-100">
-                <Icon name="folder" size={20} color="#7c3aed" />
+              <div class="icon-container-md rounded-lg bg-brand-100">
+                <Icon name="folder" size={20} color="#0ea5e9" />
               </div>
               <div>
-                <p class="text-sm text-gray-500">Cartes</p>
-                <p class="text-lg font-semibold text-gray-900">{cardCount}</p>
+                <p class="text-sm text-neutral-500">Cartes</p>
+                <p class="text-lg font-semibold text-neutral-900">{cardCount}</p>
               </div>
             </div>
             {dueCount > 0 && (
               <div class="flex items-center gap-2">
-                <div class="flex size-10 items-center justify-center rounded-full bg-red-100">
-                  <Icon name="clock" size={20} color="#dc2626" />
+                <div class="icon-container-md rounded-lg bg-error-light">
+                  <Icon name="clock" size={20} color="#ef4444" />
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500">À réviser</p>
-                  <p class="text-lg font-semibold text-red-600">{dueCount}</p>
+                  <p class="text-sm text-neutral-500">À réviser</p>
+                  <p class="text-lg font-semibold text-error">{dueCount}</p>
                 </div>
               </div>
             )}
@@ -98,28 +97,28 @@ export function CollectionPage() {
           <div class="flex flex-wrap gap-2">
             <button
               onClick={() => setShowAddCard(true)}
-              class="btn-primary flex items-center gap-2"
+              class="btn-primary"
             >
               <Icon name="plus" size={18} />
               <span>Ajouter</span>
             </button>
             <button
               onClick={() => setShowImport(true)}
-              class="btn-secondary flex items-center gap-2"
+              class="btn-secondary"
             >
               <Icon name="import" size={18} />
               <span>Importer</span>
             </button>
             <button
               onClick={() => setShowSettings(true)}
-              class="btn-ghost flex items-center gap-2"
+              class="btn-ghost"
             >
               <Icon name="settings" size={18} />
               <span>Paramètres</span>
             </button>
             <button
               onClick={() => setShowDeleteDeck(true)}
-              class="flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-red-600 transition-colors hover:bg-red-50"
+              class="btn-danger"
             >
               <Icon name="trash" size={18} />
               <span>Supprimer</span>

@@ -31,7 +31,10 @@ export function ImportCardsModalContent({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Parse content based on format
-  const parseContent = (text: string, selectedFormat: ImportFormat): ParsedCard[] => {
+  const parseContent = (
+    text: string,
+    selectedFormat: ImportFormat,
+  ): ParsedCard[] => {
     if (!text.trim()) return []
 
     const lines = text.trim().split('\n')
@@ -55,7 +58,8 @@ export function ImportCardsModalContent({
         const items = Array.isArray(parsed) ? parsed : [parsed]
         for (const item of items) {
           const question = item.question || item.q || item.front || ''
-          const answer = item.answer || item.a || item.back || item.response || ''
+          const answer =
+            item.answer || item.a || item.back || item.response || ''
           cards.push({
             question: question.toString().trim(),
             answer: answer.toString().trim(),
@@ -68,17 +72,24 @@ export function ImportCardsModalContent({
 
         for (const line of lines) {
           if (!line.trim()) continue
-          
+
           // Skip header line if detected
           const lowerLine = line.toLowerCase()
-          if (lowerLine.includes('question') && (lowerLine.includes('answer') || lowerLine.includes('response'))) {
+          if (
+            lowerLine.includes('question') &&
+            (lowerLine.includes('answer') || lowerLine.includes('response'))
+          ) {
             continue
           }
 
           const parts = line.split(separator)
           if (parts.length >= 2) {
             const question = parts[0].trim().replace(/^["']|["']$/g, '')
-            const answer = parts.slice(1).join(detectedFormat === 'tsv' ? '\t' : ',').trim().replace(/^["']|["']$/g, '')
+            const answer = parts
+              .slice(1)
+              .join(detectedFormat === 'tsv' ? '\t' : ',')
+              .trim()
+              .replace(/^["']|["']$/g, '')
             cards.push({
               question,
               answer,
@@ -123,7 +134,9 @@ export function ImportCardsModalContent({
 
     const ext = file.name.split('.').pop()?.toLowerCase()
     if (!['csv', 'json', 'txt', 'tsv'].includes(ext || '')) {
-      setError('Format de fichier non supporté. Utilisez CSV, JSON, TSV ou TXT.')
+      setError(
+        'Format de fichier non supporté. Utilisez CSV, JSON, TSV ou TXT.',
+      )
       return
     }
 
@@ -142,7 +155,9 @@ export function ImportCardsModalContent({
     if (file) {
       const ext = file.name.split('.').pop()?.toLowerCase()
       if (!['csv', 'json', 'txt', 'tsv'].includes(ext || '')) {
-        setError('Format de fichier non supporté. Utilisez CSV, JSON, TSV ou TXT.')
+        setError(
+          'Format de fichier non supporté. Utilisez CSV, JSON, TSV ou TXT.',
+        )
         return
       }
       setFileName(file.name)
@@ -185,21 +200,19 @@ export function ImportCardsModalContent({
   const invalidCount = parsedCards.filter((c) => !c.valid).length
 
   return (
-    <div class="space-y-5">
+    <div class="space-y-4">
       {/* Format selector */}
       <div>
-        <label class="mb-2 block text-sm font-medium text-gray-700">
-          Format
-        </label>
+        <label class="label">Format</label>
         <div class="flex flex-wrap gap-2">
           {(['auto', 'csv', 'json', 'tsv'] as ImportFormat[]).map((f) => (
             <button
               key={f}
               onClick={() => handleFormatChange(f)}
-              class={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+              class={`rounded-md px-3 py-1 text-sm font-medium transition-all duration-fast ${
                 format === f
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
               }`}
             >
               {f === 'auto' ? 'Auto-détection' : f.toUpperCase()}
@@ -210,19 +223,19 @@ export function ImportCardsModalContent({
 
       {/* Drop zone */}
       <div
-        class="cursor-pointer rounded-xl border-2 border-dashed border-primary-200 bg-primary-50/50 p-6 text-center transition-colors hover:border-primary-400 hover:bg-primary-50"
+        class="cursor-pointer rounded-lg border-2 border-dashed border-brand-200 bg-brand-50/50 p-6 text-center transition-colors duration-fast hover:border-brand-400 hover:bg-brand-50"
         onClick={() => fileInputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
       >
-        <div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-primary-100">
-          <Icon name="import" size={24} color="#7c3aed" />
+        <div class="mx-auto mb-3 icon-container-md rounded-lg bg-brand-100">
+          <Icon name="import" size={24} color="#0ea5e9" />
         </div>
-        <p class="text-sm text-gray-600">
+        <p class="text-sm text-neutral-600">
           Glissez un fichier ici ou{' '}
-          <span class="font-medium text-primary-600">cliquez pour parcourir</span>
+          <span class="font-medium text-brand-600">cliquez pour parcourir</span>
         </p>
-        <p class="mt-1 text-xs text-gray-400">CSV, JSON, TSV ou TXT</p>
+        <p class="mt-1 text-xs text-neutral-400">CSV, JSON, TSV ou TXT</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -233,17 +246,15 @@ export function ImportCardsModalContent({
       </div>
 
       {fileName && (
-        <div class="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
-          <Icon name="folder" size={16} color="#6b7280" />
-          <span class="text-sm text-gray-600">{fileName}</span>
+        <div class="flex items-center gap-2 rounded-md bg-neutral-50 px-3 py-2">
+          <Icon name="folder" size={16} color="#78716c" />
+          <span class="text-sm text-neutral-600">{fileName}</span>
         </div>
       )}
 
       {/* Text area for paste/edit */}
       <div>
-        <label class="mb-2 block text-sm font-medium text-gray-700">
-          Ou collez vos données ici
-        </label>
+        <label class="label">Ou collez vos données ici</label>
         <textarea
           value={content}
           onInput={(e) => handleContentChange(e.currentTarget.value)}
@@ -265,42 +276,60 @@ TSV : question[TAB]réponse`}
       {parsedCards.length > 0 && (
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h4 class="text-sm font-medium text-gray-700">
-              Aperçu ({validCount} carte{validCount > 1 ? 's' : ''} valide{validCount > 1 ? 's' : ''})
+            <h4 class="text-sm font-medium text-neutral-700">
+              Aperçu ({validCount} carte{validCount > 1 ? 's' : ''} valide
+              {validCount > 1 ? 's' : ''})
             </h4>
             {invalidCount > 0 && (
-              <span class="text-xs text-amber-600">
-                {invalidCount} ligne{invalidCount > 1 ? 's' : ''} ignorée{invalidCount > 1 ? 's' : ''}
+              <span class="text-xs text-warning">
+                {invalidCount} ligne{invalidCount > 1 ? 's' : ''} ignorée
+                {invalidCount > 1 ? 's' : ''}
               </span>
             )}
           </div>
-          <div class="max-h-48 overflow-y-auto rounded-lg border border-gray-200">
+          <div class="max-h-48 overflow-y-auto rounded-md border border-neutral-200">
             <table class="w-full text-sm">
-              <thead class="sticky top-0 bg-gray-50">
+              <thead class="sticky top-0 bg-neutral-50">
                 <tr>
-                  <th class="px-3 py-2 text-left font-medium text-gray-600">Question</th>
-                  <th class="px-3 py-2 text-left font-medium text-gray-600">Réponse</th>
+                  <th class="px-3 py-2 text-left font-medium text-neutral-600">
+                    Question
+                  </th>
+                  <th class="px-3 py-2 text-left font-medium text-neutral-600">
+                    Réponse
+                  </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-neutral-100">
                 {parsedCards.slice(0, 10).map((card, i) => (
                   <tr
                     key={i}
-                    class={card.valid ? '' : 'bg-amber-50 text-amber-700'}
+                    class={card.valid ? '' : 'bg-warning-light text-warning'}
                   >
-                    <td class="max-w-[200px] truncate px-3 py-2" title={card.question}>
-                      {card.question || <span class="italic text-gray-400">Vide</span>}
+                    <td
+                      class="max-w-[200px] truncate px-3 py-2"
+                      title={card.question}
+                    >
+                      {card.question || (
+                        <span class="italic text-neutral-400">Vide</span>
+                      )}
                     </td>
-                    <td class="max-w-[200px] truncate px-3 py-2" title={card.answer}>
-                      {card.answer || <span class="italic text-gray-400">Vide</span>}
+                    <td
+                      class="max-w-[200px] truncate px-3 py-2"
+                      title={card.answer}
+                    >
+                      {card.answer || (
+                        <span class="italic text-neutral-400">Vide</span>
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {parsedCards.length > 10 && (
-              <div class="bg-gray-50 px-3 py-2 text-center text-xs text-gray-500">
-                Et {parsedCards.length - 10} autre{parsedCards.length - 10 > 1 ? 's' : ''} carte{parsedCards.length - 10 > 1 ? 's' : ''}...
+              <div class="bg-neutral-50 px-3 py-2 text-center text-xs text-neutral-500">
+                Et {parsedCards.length - 10} autre
+                {parsedCards.length - 10 > 1 ? 's' : ''} carte
+                {parsedCards.length - 10 > 1 ? 's' : ''}...
               </div>
             )}
           </div>
@@ -318,7 +347,7 @@ TSV : question[TAB]réponse`}
           type="button"
           onClick={handleImport}
           disabled={isImporting || validCount === 0}
-          class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+          class="btn-primary"
         >
           {isImporting
             ? 'Importation...'

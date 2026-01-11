@@ -27,7 +27,7 @@ export function LearningPage() {
   if (lists === undefined) {
     return (
       <div class="flex min-h-[60vh] items-center justify-center">
-        <div class="animate-pulse text-primary-500">Loading...</div>
+        <div class="animate-pulse text-brand-500">Loading...</div>
       </div>
     )
   }

@@ -4,57 +4,87 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Primary brand colors (customizable via theme.ts)
-        primary: {
-          50: 'var(--color-primary-50, #f5f3ff)',
-          100: 'var(--color-primary-100, #ede9fe)',
-          200: 'var(--color-primary-200, #ddd6fe)',
-          300: 'var(--color-primary-300, #c4b5fd)',
-          400: 'var(--color-primary-400, #a78bfa)',
-          500: 'var(--color-primary-500, #8b5cf6)',
-          600: 'var(--color-primary-600, #7c3aed)',
-          700: 'var(--color-primary-700, #6d28d9)',
-          800: 'var(--color-primary-800, #5b21b6)',
-          900: 'var(--color-primary-900, #4c1d95)',
+        // Primaire : Bleu/Teal moderne
+        brand: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',  // Couleur principale
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+        },
+        // Neutres : Gris chauds
+        neutral: {
+          50: '#fafaf9',   // Fond
+          100: '#f5f5f4',
+          200: '#e7e5e4',
+          300: '#d6d3d1',
+          400: '#a8a29e',
+          500: '#78716c',  // Texte secondaire
+          600: '#57534e',
+          700: '#44403c',  // Texte sombre
+          800: '#292524',
+          900: '#1c1917',
         },
         // Surface colors
         surface: {
-          bg: 'var(--color-surface-bg, #faf5ff)',
-          card: 'var(--color-surface-card, #ffffff)',
-          elevated: 'var(--color-surface-elevated, #ffffff)',
-          muted: 'var(--color-surface-muted, #f3f4f6)',
+          bg: '#fafaf9',
+          card: '#ffffff',
+          elevated: '#ffffff',
+          muted: '#f5f5f4',
         },
         // Status colors
-        success: 'var(--color-success, #22c55e)',
-        'success-light': 'var(--color-success-light, #dcfce7)',
-        error: 'var(--color-error, #ef4444)',
-        'error-light': 'var(--color-error-light, #fee2e2)',
-        warning: 'var(--color-warning, #f59e0b)',
-        'warning-light': 'var(--color-warning-light, #fef3c7)',
-        info: 'var(--color-info, #3b82f6)',
-        'info-light': 'var(--color-info-light, #dbeafe)',
+        success: {
+          DEFAULT: '#22c55e',
+          light: '#dcfce7',
+        },
+        warning: {
+          DEFAULT: '#f59e0b',
+          light: '#fef3c7',
+        },
+        error: {
+          DEFAULT: '#ef4444',
+          light: '#fee2e2',
+        },
         // Mastery level colors
         mastery: {
-          new: 'var(--color-mastery-new, #e5e7eb)',
-          learning: 'var(--color-mastery-learning, #fbbf24)',
-          review: 'var(--color-mastery-review, #60a5fa)',
-          mastered: 'var(--color-mastery-mastered, #34d399)',
+          new: '#e7e5e4',
+          learning: '#fbbf24',
+          review: '#38bdf8',
+          mastered: '#22c55e',
         },
       },
-      boxShadow: {
-        'soft': 'var(--shadow-md, 0 4px 6px rgba(139, 92, 246, 0.1))',
-        'glow': 'var(--shadow-lg, 0 10px 25px rgba(139, 92, 246, 0.15))',
-        'xl': 'var(--shadow-xl, 0 20px 40px rgba(139, 92, 246, 0.2))',
-      },
+      // Border radius standardisé
       borderRadius: {
-        'card': 'var(--radius-2xl, 1.5rem)',
+        'sm': '4px',
+        'md': '8px',
+        'lg': '12px',
+        'xl': '16px',
+        'card': '12px',
       },
+      // Shadows : 3 niveaux seulement
+      boxShadow: {
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.05)',
+        'md': '0 4px 6px rgba(0, 0, 0, 0.07)',
+        'lg': '0 10px 20px rgba(0, 0, 0, 0.1)',
+      },
+      // Transitions standardisées
+      transitionDuration: {
+        'fast': '150ms',
+        'normal': '250ms',
+      },
+      // Spacing cohérent (déjà par défaut dans Tailwind, on garde le standard)
+      // 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px
       animation: {
-        'fade-in': 'fadeIn 0.3s ease-out',
-        'slide-up': 'slideUp 0.4s ease-out',
+        'fade-in': 'fadeIn 0.25s ease-out',
+        'slide-up': 'slideUp 0.25s ease-out',
         'shake': 'shake 0.5s ease-in-out',
         'pulse-success': 'pulseSuccess 0.6s ease-out',
-        'bounce-in': 'bounceIn 0.5s ease-out',
+        'bounce-in': 'bounceIn 0.25s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -76,8 +106,8 @@ export default {
           '100%': { boxShadow: '0 0 0 0 rgba(34, 197, 94, 0)' },
         },
         bounceIn: {
-          '0%': { opacity: '0', transform: 'scale(0.8)' },
-          '50%': { transform: 'scale(1.05)' },
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '50%': { transform: 'scale(1.02)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
       },

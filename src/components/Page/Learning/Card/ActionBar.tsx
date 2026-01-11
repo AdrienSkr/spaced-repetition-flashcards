@@ -42,25 +42,25 @@ export const ActionBar = ({ card, listId, onAddCard, onEditCard }: ActionBarProp
     isActive?: boolean
   }) => (
     <div
-      class={`group relative flex size-7 items-center justify-center rounded-lg p-1.5 
-             transition-all duration-200 
+      class={`group relative flex size-7 items-center justify-center rounded-md p-1 
+             transition-all duration-fast 
              ${disabled 
                ? 'cursor-not-allowed opacity-40' 
                : isActive
-                 ? 'cursor-pointer bg-primary-200 shadow-sm ring-2 ring-primary-400'
-                 : 'cursor-pointer hover:bg-primary-100 hover:shadow-sm active:bg-primary-200 active:shadow-inner'
+                 ? 'cursor-pointer bg-brand-200 shadow-sm ring-2 ring-brand-400'
+                 : 'cursor-pointer hover:bg-brand-100 hover:shadow-sm active:bg-brand-200'
              }`}
       onClick={disabled ? undefined : onClick}
     >
       <img
         src={icon}
         alt={`${label} icon`}
-        class={`size-full transition-transform duration-200 ${!disabled && 'group-hover:scale-110'}`}
+        class={`size-full transition-transform duration-fast ${!disabled && 'group-hover:scale-110'}`}
       />
       <span class="pointer-events-none absolute -bottom-8 left-1/2 z-10 
-                   -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-2 py-1 
+                   -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-800 px-2 py-1 
                    text-xs text-white opacity-0 
-                   transition-opacity duration-200 group-hover:opacity-100">
+                   transition-opacity duration-fast group-hover:opacity-100">
         {label}
       </span>
     </div>
@@ -69,10 +69,10 @@ export const ActionBar = ({ card, listId, onAddCard, onEditCard }: ActionBarProp
   return (
     <div
       id="bar"
-      class="absolute left-1/2 top-4 flex h-11 -translate-x-1/2 
+      class="absolute left-1/2 top-4 flex h-10 -translate-x-1/2 
              items-center justify-between gap-6 
-             rounded-full border border-primary-100 
-             bg-primary-50 px-5 shadow-sm"
+             rounded-lg border border-brand-100 
+             bg-brand-50 px-4 shadow-sm"
     >
       {/* Learning Mode Buttons */}
       <div class="flex items-center gap-2">
@@ -97,7 +97,7 @@ export const ActionBar = ({ card, listId, onAddCard, onEditCard }: ActionBarProp
       </div>
 
       {/* Divider */}
-      <div class="h-5 w-px bg-primary-200" />
+      <div class="h-5 w-px bg-brand-200" />
 
       {/* Edit Actions */}
       <div class="flex items-center gap-2">
@@ -117,5 +117,3 @@ export const ActionBar = ({ card, listId, onAddCard, onEditCard }: ActionBarProp
     </div>
   )
 }
-
-

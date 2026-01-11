@@ -84,7 +84,7 @@ export function Modal({
       }}
     >
       <div
-        class={`${sizeClasses[size]} w-full animate-bounce-in rounded-2xl bg-surface-card shadow-xl`}
+        class={`${sizeClasses[size]} w-full animate-bounce-in rounded-lg bg-surface-card shadow-lg`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -97,13 +97,13 @@ export function Modal({
         }}
       >
         {/* Header */}
-        <div class="flex items-center justify-between border-b border-primary-100 px-6 py-4">
-          <h2 id="modal-title" class="text-xl font-semibold text-gray-900">
+        <div class="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
+          <h2 id="modal-title" class="text-lg font-semibold text-neutral-900">
             {title}
           </h2>
           <button
             onClick={onClose}
-            class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+            class="rounded-md p-2 text-neutral-400 transition-colors duration-fast hover:bg-neutral-100 hover:text-neutral-600"
             aria-label="Close modal"
           >
             <svg

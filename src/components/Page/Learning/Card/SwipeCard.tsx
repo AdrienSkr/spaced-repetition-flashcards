@@ -17,13 +17,14 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
   const [isFlipped, setIsFlipped] = useState(false)
   const [animationClass, setAnimationClass] = useState('')
 
-  // Modal states
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [cardToEdit, setCardToEdit] = useState<CardType | null>(null)
 
-  // Get mastery level for visual indicator
-  const masteryLevel = getMasteryLevel(card.repetitions || 0, card.interval || 0)
+  const masteryLevel = getMasteryLevel(
+    card.repetitions || 0,
+    card.interval || 0,
+  )
   const masteryColors = {
     new: 'bg-mastery-new',
     learning: 'bg-mastery-learning',
@@ -31,31 +32,16 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
     mastered: 'bg-mastery-mastered',
   }
 
-  // Reset state when card changes
   useEffect(() => {
     setIsFlipped(false)
     setAnimationClass('')
   }, [card.id])
 
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped)
-  }
+  const handleFlip = () => setIsFlipped(!isFlipped)
 
   const handleAnswer = (isCorrect: boolean) => {
     setAnimationClass(isCorrect ? 'answer-correct' : 'answer-incorrect')
-    // Small delay for animation feedback before moving to next card
-    setTimeout(() => {
-      onAnswer(card, { isCorrect })
-    }, 200)
-  }
-
-  const handleAddCard = () => {
-    setShowAddModal(true)
-  }
-
-  const handleEditCard = (cardToEdit: CardType) => {
-    setCardToEdit(cardToEdit)
-    setShowEditModal(true)
+    setTimeout(() => onAnswer(card, { isCorrect }), 200)
   }
 
   return (
@@ -63,8 +49,8 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
       <div
         class={`
           relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
-          rounded-3xl bg-surface-card p-12 shadow-glow 
-          transition-all duration-300 hover:shadow-xl
+          rounded-lg bg-surface-card p-8 shadow-lg 
+          transition-all duration-normal hover:shadow-lg
           ${animationClass}
         `}
       >
@@ -77,64 +63,75 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
         </div>
 
         {/* Mode indicator */}
-        <div class="absolute right-4 top-4 text-xs uppercase tracking-wide text-primary-500">
+        <div class="absolute right-4 top-4 text-xs uppercase tracking-wide text-brand-500">
           Swipe
         </div>
 
-        {/* ActionBar */}
         <ActionBar
           card={card}
           listId={listId}
-          onAddCard={handleAddCard}
-          onEditCard={handleEditCard}
+          onAddCard={() => setShowAddModal(true)}
+          onEditCard={(c) => {
+            setCardToEdit(c)
+            setShowEditModal(true)
+          }}
         />
 
-        {/* Card content */}
         {!isFlipped ? (
-          // Question side
           <div
             class="flex w-full cursor-pointer flex-col items-center gap-8"
             onClick={handleFlip}
           >
-            <h3 class="text-center text-2xl font-bold leading-relaxed text-gray-900 md:text-3xl">
+            <h3 class="text-center text-xl font-semibold leading-relaxed text-neutral-900 md:text-2xl">
               {card.question}
             </h3>
-            <p class="text-sm text-gray-400">
-              Cliquez pour voir la réponse
-            </p>
+            <p class="text-sm text-neutral-400">Cliquez pour voir la réponse</p>
           </div>
         ) : (
-          // Answer side
           <div class="flex w-full flex-col items-center gap-8 animate-fade-in">
-            {/* Question reminder */}
-            <p class="text-center text-sm text-gray-500">
-              {card.question}
-            </p>
-
-            {/* Answer */}
-            <h3 class="text-center text-2xl font-bold leading-relaxed text-primary-600 md:text-3xl">
+            <p class="text-center text-sm text-neutral-500">{card.question}</p>
+            <h3 class="text-center text-xl font-semibold leading-relaxed text-brand-600 md:text-2xl">
               {card.answer}
             </h3>
 
-            {/* Answer buttons */}
             <div class="mt-4 flex gap-4">
               <button
                 onClick={() => handleAnswer(false)}
-                class="flex items-center gap-2 rounded-xl bg-red-100 px-6 py-3 font-medium text-red-700 
-                       transition-all hover:bg-red-200 active:scale-95"
+                class="flex items-center gap-2 rounded-lg bg-error-light px-4 py-2 font-medium text-error 
+                       transition-all duration-fast hover:bg-error hover:text-white active:scale-95"
               >
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  class="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
                 Incorrect
               </button>
               <button
                 onClick={() => handleAnswer(true)}
-                class="flex items-center gap-2 rounded-xl bg-green-100 px-6 py-3 font-medium text-green-700 
-                       transition-all hover:bg-green-200 active:scale-95"
+                class="flex items-center gap-2 rounded-lg bg-success-light px-4 py-2 font-medium text-success 
+                       transition-all duration-fast hover:bg-success hover:text-white active:scale-95"
               >
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <svg
+                  class="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Correct
               </button>
@@ -143,7 +140,6 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
         )}
       </div>
 
-      {/* Add Card Modal */}
       <Modal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -160,7 +156,6 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
         />
       </Modal>
 
-      {/* Edit Card Modal */}
       <Modal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}

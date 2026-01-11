@@ -38,9 +38,7 @@ export function CreateListModalContent({ onSuccess, onCancel }: CreateListModalC
   return (
     <form onSubmit={handleSubmit} class="space-y-6">
       <div>
-        <label class="mb-2 block text-sm font-medium text-gray-700">
-          Deck Name
-        </label>
+        <label class="label">Deck Name</label>
         <input
           type="text"
           value={title}
@@ -58,17 +56,13 @@ export function CreateListModalContent({ onSuccess, onCancel }: CreateListModalC
       </div>
 
       <div class="flex justify-end gap-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          class="btn-ghost"
-        >
+        <button type="button" onClick={onCancel} class="btn-ghost">
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+          class="btn-primary"
         >
           {isSubmitting ? 'Creating...' : 'Create Deck'}
         </button>

@@ -29,9 +29,9 @@ export function DeleteConfirmModalContent({
   return (
     <div class="space-y-6">
       <div class="flex items-start gap-4">
-        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100">
+        <div class="icon-container-md shrink-0 rounded-lg bg-error-light">
           <svg
-            class="size-6 text-red-600"
+            class="size-6 text-error"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -45,8 +45,8 @@ export function DeleteConfirmModalContent({
           </svg>
         </div>
         <div>
-          <h3 class="text-lg font-semibold text-gray-900">{title}</h3>
-          <p class="mt-2 text-gray-600">{message}</p>
+          <h3 class="text-lg font-semibold text-neutral-900">{title}</h3>
+          <p class="mt-2 text-neutral-600">{message}</p>
         </div>
       </div>
 
@@ -63,7 +63,7 @@ export function DeleteConfirmModalContent({
           type="button"
           onClick={handleConfirm}
           disabled={isDeleting}
-          class="rounded-xl bg-red-600 px-6 py-3 font-medium text-white transition-all duration-200 hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+          class="btn-danger"
         >
           {isDeleting ? 'Suppression...' : confirmLabel}
         </button>

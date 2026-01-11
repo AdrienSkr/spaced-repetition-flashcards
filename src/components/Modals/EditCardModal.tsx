@@ -48,17 +48,17 @@ export function EditCardModalContent({ card, onSuccess, onCancel }: EditCardModa
   return (
     <form onSubmit={handleSubmit} class="space-y-6">
       {/* Preview Card */}
-      <div class="space-y-4 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 p-6">
+      <div class="space-y-4 rounded-lg bg-brand-50 p-4">
         <div>
-          <span class="text-xs font-medium uppercase tracking-wide text-primary-500">Question</span>
-          <p class="mt-1 min-h-7 text-lg text-gray-900">
-            {question || <span class="italic text-gray-400">Your question will appear here...</span>}
+          <span class="text-xs font-medium uppercase tracking-wide text-brand-600">Question</span>
+          <p class="mt-1 min-h-6 text-base text-neutral-900">
+            {question || <span class="italic text-neutral-400">Your question will appear here...</span>}
           </p>
         </div>
-        <div class="border-t border-primary-200 pt-4">
-          <span class="text-xs font-medium uppercase tracking-wide text-primary-500">Answer</span>
-          <p class="mt-1 min-h-7 text-lg text-gray-900">
-            {answer || <span class="italic text-gray-400">Your answer will appear here...</span>}
+        <div class="border-t border-brand-200 pt-4">
+          <span class="text-xs font-medium uppercase tracking-wide text-brand-600">Answer</span>
+          <p class="mt-1 min-h-6 text-base text-neutral-900">
+            {answer || <span class="italic text-neutral-400">Your answer will appear here...</span>}
           </p>
         </div>
       </div>
@@ -66,9 +66,7 @@ export function EditCardModalContent({ card, onSuccess, onCancel }: EditCardModa
       {/* Form Fields */}
       <div class="space-y-4">
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-            Question
-          </label>
+          <label class="label">Question</label>
           <textarea
             value={question}
             onInput={(e) => {
@@ -82,9 +80,7 @@ export function EditCardModalContent({ card, onSuccess, onCancel }: EditCardModa
         </div>
 
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-            Answer
-          </label>
+          <label class="label">Answer</label>
           <textarea
             value={answer}
             onInput={(e) => {
@@ -103,17 +99,13 @@ export function EditCardModalContent({ card, onSuccess, onCancel }: EditCardModa
       )}
 
       <div class="flex justify-end gap-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          class="btn-ghost"
-        >
+        <button type="button" onClick={onCancel} class="btn-ghost">
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSubmitting || !hasChanges}
-          class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+          class="btn-primary"
         >
           {isSubmitting ? 'Saving...' : 'Save Changes'}
         </button>
