@@ -80,6 +80,22 @@
     @apply bg-error text-white;
   }
 
+  .btn-incorrect {
+    @apply flex items-center gap-2 rounded-lg bg-error-light px-4 py-2 font-medium transition-all duration-fast active:scale-95;
+    color: #b91c1c;
+  }
+  .btn-incorrect:hover {
+    @apply bg-error text-white;
+  }
+
+  .btn-correct {
+    @apply flex items-center gap-2 rounded-lg bg-success-light px-4 py-2 font-medium transition-all duration-fast active:scale-95;
+    color: #15803d;
+  }
+  .btn-correct:hover {
+    @apply bg-success text-white;
+  }
+
   /* ----- Cards ----- */
 
   .card {
