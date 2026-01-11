@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'preact'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
-import { useCollectionContext } from '../../../Page/Collection/CollectionContext'
+import { useListSelector } from '../../../../contexts/ListSelectorContext'
 import { Modal } from '../../../shared/Modal'
 import { CreateListModalContent } from '../../../Modals/CreateListModal'
 import { DeckSettingsModalContent } from '../../../Modals/DeckSettingsModal'
@@ -8,8 +8,8 @@ import { List } from '../../../../models/List'
 import { db } from '../../../../models/db'
 
 const CollectionSelector: FunctionComponent = () => {
-  const { selectedList, setSelectedList, lists, setLists } =
-    useCollectionContext()
+  const { selectedList, selectedListId, setSelectedListId, lists, setLists } =
+    useListSelector()
   const [showCreateListModal, setShowCreateListModal] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -34,10 +34,10 @@ const CollectionSelector: FunctionComponent = () => {
 
   // Initialize to "all cards" if no list is selected (id is undefined or missing)
   useEffect(() => {
-    if (selectedList?.id === undefined) {
-      setSelectedList({ id: 0, title: 'all cards' } as List)
+    if (selectedListId === undefined) {
+      setSelectedListId(0)
     }
-  }, [selectedList, setSelectedList])
+  }, [selectedListId, setSelectedListId])
 
   // Update dropdown width when opening to match button width
   useEffect(() => {
@@ -94,10 +94,10 @@ const CollectionSelector: FunctionComponent = () => {
   const handleListSelect = useCallback(
     (list: List | { id: 0; title: 'all cards' }) => {
       if (!isMountedRef.current) return
-      setSelectedList(list)
+      setSelectedListId(list.id ?? 0)
       setIsDropdownOpen(false)
     },
-    [setSelectedList],
+    [setSelectedListId],
   )
 
   const handleSettingsClick = useCallback((e: Event, list: List) => {
@@ -125,27 +125,27 @@ const CollectionSelector: FunctionComponent = () => {
       if (newList && isMountedRef.current) {
         // Update lists array and select the new list
         setLists([...lists, newList])
-        setSelectedList(newList)
+        setSelectedListId(newList.id!)
       }
       setShowCreateListModal(false)
     },
-    [lists, setLists, setSelectedList],
+    [lists, setLists, setSelectedListId],
   )
 
   const handleSettingsSuccess = useCallback(
     (updatedList: List) => {
       if (!isMountedRef.current) return
       // Update lists array with the modified list
-      setLists(lists.map((l) => (l.id === updatedList.id ? updatedList : l)))
-      setSelectedList(updatedList)
+      setLists(lists.map((l: List) => (l.id === updatedList.id ? updatedList : l)))
+      setSelectedListId(updatedList.id!)
       setShowSettingsModal(false)
       setSettingsList(null)
     },
-    [lists, setLists, setSelectedList],
+    [lists, setLists, setSelectedListId],
   )
 
   // Get current selected list for display
-  const currentListTitle = selectedList?.title || 'all cards'
+  const currentListTitle = selectedListId === 0 ? 'all cards' : (selectedList?.title || 'all cards')
 
   return (
     <>
@@ -197,7 +197,7 @@ const CollectionSelector: FunctionComponent = () => {
             <button
               onClick={() => handleListSelect({ id: 0, title: 'all cards' })}
               class={`w-full px-4 py-2 text-left font-medium transition-colors hover:bg-primary-50 ${
-                selectedList?.id === 0
+                selectedListId === 0
                   ? 'bg-primary-100 text-primary-700'
                   : 'text-gray-700'
               }`}
@@ -214,7 +214,7 @@ const CollectionSelector: FunctionComponent = () => {
                 <div
                   key={list.id}
                   class={`flex items-center justify-between px-4 py-2 transition-colors hover:bg-primary-50 ${
-                    selectedList?.id === list.id ? 'bg-primary-100' : ''
+                    selectedListId === list.id ? 'bg-primary-100' : ''
                   }`}
                 >
                   <button
@@ -253,7 +253,7 @@ const CollectionSelector: FunctionComponent = () => {
             </div>
 
             {/* Divider */}
-            {(lists.length > 0 || selectedList?.id === 0) && (
+            {(lists.length > 0 || selectedListId === 0) && (
               <div class="border-t border-primary-100" />
             )}
 

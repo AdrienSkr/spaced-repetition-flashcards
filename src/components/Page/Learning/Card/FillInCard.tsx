@@ -7,7 +7,7 @@ import {
   FillInResult,
 } from '../../../../utils/fillInHeuristic'
 import { isAnswerCorrect } from '../../../../utils/levenshtein'
-import { useLearningContext } from '../LearningContext'
+import { useListSelector } from '../../../../contexts/ListSelectorContext'
 import { ActionBar } from './ActionBar'
 import { Modal } from '../../../shared/Modal'
 import { AddCardModalContent } from '../../../Modals/AddCardModal'
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
-  const { selectedList } = useLearningContext()
+  const { selectedList } = useListSelector()
   const [answers, setAnswers] = useState<string[]>([])
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [correctAnswers, setCorrectAnswers] = useState<boolean[]>([])

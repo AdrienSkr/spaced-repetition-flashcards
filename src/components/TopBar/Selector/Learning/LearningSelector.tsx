@@ -1,7 +1,7 @@
 // components/LearningSelector.tsx
 import { FunctionComponent } from 'preact'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
-import { useLearningContext } from '../../../Page/Learning/LearningContext'
+import { useListSelector } from '../../../../contexts/ListSelectorContext'
 import { Modal } from '../../../shared/Modal'
 import { DeckSettingsModalContent } from '../../../Modals/DeckSettingsModal'
 import { CreateListModalContent } from '../../../Modals/CreateListModal'
@@ -9,8 +9,8 @@ import { List } from '../../../../models/List'
 import { db } from '../../../../models/db'
 
 const LearningSelector: FunctionComponent = () => {
-  const { selectedList, setSelectedList, lists, setLists } =
-    useLearningContext()
+  const { selectedList, setSelectedListId, lists, setLists } =
+    useListSelector()
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showCreateListModal, setShowCreateListModal] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -88,10 +88,10 @@ const LearningSelector: FunctionComponent = () => {
   const handleListSelect = useCallback(
     (list: List) => {
       if (!isMountedRef.current) return
-      setSelectedList(list)
+      setSelectedListId(list.id!)
       setIsDropdownOpen(false)
     },
-    [setSelectedList],
+    [setSelectedListId],
   )
 
   const handleSettingsClick = useCallback((e: Event, list: List) => {
@@ -107,12 +107,12 @@ const LearningSelector: FunctionComponent = () => {
     (updatedList: List) => {
       if (!isMountedRef.current) return
       // Update lists array with the modified list
-      setLists(lists.map((l) => (l.id === updatedList.id ? updatedList : l)))
-      setSelectedList(updatedList)
+      setLists(lists.map((l: List) => (l.id === updatedList.id ? updatedList : l)))
+      setSelectedListId(updatedList.id!)
       setShowSettingsModal(false)
       setSettingsList(null)
     },
-    [lists, setLists, setSelectedList],
+    [lists, setLists, setSelectedListId],
   )
 
   const handleCreateListClick = useCallback((e: Event) => {
@@ -131,11 +131,11 @@ const LearningSelector: FunctionComponent = () => {
       if (newList && isMountedRef.current) {
         // Update lists array and select the new list
         setLists([...lists, newList])
-        setSelectedList(newList)
+        setSelectedListId(newList.id!)
       }
       setShowCreateListModal(false)
     },
-    [lists, setLists, setSelectedList],
+    [lists, setLists, setSelectedListId],
   )
 
   // Get current selected list for display (fallback to first list if none selected)

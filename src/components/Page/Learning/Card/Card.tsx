@@ -7,7 +7,7 @@ import { Modal } from '../../../shared/Modal'
 import { AddCardModalContent } from '../../../Modals/AddCardModal'
 import { EditCardModalContent } from '../../../Modals/EditCardModal'
 import { ActionBar } from './ActionBar'
-import { useLearningContext } from '../LearningContext'
+import { useListSelector } from '../../../../contexts/ListSelectorContext'
 
 interface Props {
   card: CardType
@@ -17,7 +17,7 @@ interface Props {
 }
 
 export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
-  const { selectedList } = useLearningContext()
+  const { selectedList } = useListSelector()
   const [input, setInput] = useState<string>('')
   const [isAnswered, setIsAnswered] = useState<boolean>(false)
   const [isCorrect, setIsCorrect] = useState<boolean>(false)
