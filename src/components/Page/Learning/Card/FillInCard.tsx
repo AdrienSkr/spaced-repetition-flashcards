@@ -156,10 +156,8 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
       tabIndex={0}
       onClick={isSubmitted ? handleContinue : undefined}
       onKeyDown={handleCardKeyDown}
-      class={`relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
-              rounded-lg bg-surface-card p-8 shadow-lg 
-              transition-all duration-normal 
-              hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-400
+      class={`learning-card
+              focus:outline-none focus:ring-2 focus:ring-brand-400
               ${isSubmitted ? 'cursor-pointer active:scale-[0.99]' : ''}
               ${animationClass}`}
     >

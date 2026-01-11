@@ -7,6 +7,13 @@
    ============================================ */
 
 @layer base {
+  :root {
+    /* ActionBar dimensions - utilisées pour le centrage des cartes */
+    --action-bar-top: 1rem;      /* top-4 */
+    --action-bar-height: 2.5rem; /* h-10 */
+    --action-bar-offset: calc(var(--action-bar-top) + var(--action-bar-height));
+  }
+
   html {
     /* Force la scrollbar à toujours être visible pour éviter le décalage horizontal lors du changement de page */
     overflow-y: scroll;
@@ -86,6 +93,26 @@
   }
   .card-interactive:hover {
     @apply shadow-lg;
+  }
+
+  /* ----- Learning Card ----- */
+  /* Carte d'apprentissage avec centrage compensé pour l'ActionBar */
+  .learning-card {
+    @apply relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center 
+           rounded-lg bg-surface-card shadow-lg transition-all duration-normal hover:shadow-lg;
+    padding: 2rem;
+    padding-top: calc(2rem + var(--action-bar-offset));
+    justify-content: center;
+  }
+  /* Trait séparateur sous l'ActionBar pour visualiser la zone de centrage */
+  .learning-card::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--action-bar-offset) + 1rem);
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background-color: #e7e5e4; /* neutral-200 */
   }
 
   /* ----- Inputs ----- */

@@ -86,10 +86,8 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
         onKeyDown={isAnswered ? onKeyDownCard : undefined}
         tabIndex={0}
         class={`
-          relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
-          rounded-lg bg-surface-card p-8 shadow-lg 
-          transition-all duration-normal 
-          hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-400 
+          learning-card
+          focus:outline-none focus:ring-2 focus:ring-brand-400 
           ${isAnswered ? 'cursor-pointer active:scale-[0.99]' : ''}
           ${animationClass}
         `}
