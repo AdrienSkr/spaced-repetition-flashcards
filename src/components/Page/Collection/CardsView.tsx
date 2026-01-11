@@ -5,9 +5,13 @@ import { db } from '../../../models/db'
 import { List } from '../../../models/List'
 import { getMasteryLevel, getMasteryLabel, getNextReviewText, isDue, MasteryLevel } from '../../../utils/sm2'
 import { Icon } from '../../shared/Icon'
+import { Modal } from '../../shared/Modal'
+import { EditCardModalContent } from '../../Modals/EditCardModal'
+import { DeleteConfirmModalContent } from '../../Modals/DeleteConfirmModal'
 
 type Props = {
   list: List
+  onAddCard?: () => void
 }
 
 type TabFilter = 'all' | 'due' | 'new' | 'learning' | 'review' | 'mastered'
@@ -28,8 +32,10 @@ const tabs: TabConfig[] = [
   { id: 'mastered', label: 'Mastered', color: 'text-green-700', bgColor: 'bg-mastery-mastered' },
 ]
 
-export function CardsView({ list }: Props) {
+export function CardsView({ list, onAddCard }: Props) {
   const [activeTab, setActiveTab] = useState<TabFilter>('all')
+  const [editingCard, setEditingCard] = useState<Card | null>(null)
+  const [deletingCard, setDeletingCard] = useState<Card | null>(null)
   
   const cards = useLiveQuery(
     () =>
@@ -128,12 +134,13 @@ export function CardsView({ list }: Props) {
       {/* Cards Table */}
       <div class="overflow-hidden rounded-2xl bg-surface-card shadow-soft">
         {/* Header */}
-        <div class="grid grid-cols-[60px_1fr_1fr_120px_100px] gap-4 border-b border-primary-100 bg-primary-50 px-6 py-4">
+        <div class="grid grid-cols-[60px_1fr_1fr_120px_100px_80px] gap-4 border-b border-primary-100 bg-primary-50 px-6 py-4">
           <div class="text-sm font-semibold text-primary-700">ID</div>
           <div class="text-sm font-semibold text-primary-700">Question</div>
           <div class="text-sm font-semibold text-primary-700">Answer</div>
           <div class="text-sm font-semibold text-primary-700">Next Review</div>
           <div class="text-sm font-semibold text-primary-700">Status</div>
+          <div class="text-sm font-semibold text-primary-700">Actions</div>
         </div>
         
         {/* Rows */}
@@ -150,7 +157,7 @@ export function CardsView({ list }: Props) {
               return (
                 <div 
                   key={card.id} 
-                  class={`grid grid-cols-[60px_1fr_1fr_120px_100px] gap-4 px-6 py-4 transition-colors hover:bg-primary-50 ${
+                  class={`grid grid-cols-[60px_1fr_1fr_120px_100px_80px] gap-4 px-6 py-4 transition-colors hover:bg-primary-50 ${
                     cardIsDue ? 'bg-red-50/50' : ''
                   }`}
                 >
@@ -169,12 +176,65 @@ export function CardsView({ list }: Props) {
                       {getMasteryLabel(mastery)}
                     </span>
                   </div>
+                  <div class="flex items-center gap-1">
+                    <button
+                      onClick={() => setEditingCard(card)}
+                      class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-primary-100 hover:text-primary-600"
+                      title="Modifier"
+                    >
+                      <Icon name="edit" size={16} />
+                    </button>
+                    <button
+                      onClick={() => setDeletingCard(card)}
+                      class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
+                      title="Supprimer"
+                    >
+                      <Icon name="trash" size={16} />
+                    </button>
+                  </div>
                 </div>
               )
             })}
           </div>
         )}
       </div>
+
+      {/* Edit Card Modal */}
+      <Modal
+        isOpen={editingCard !== null}
+        onClose={() => setEditingCard(null)}
+        title="Modifier la carte"
+      >
+        {editingCard && (
+          <EditCardModalContent
+            card={editingCard}
+            onSuccess={() => setEditingCard(null)}
+            onCancel={() => setEditingCard(null)}
+          />
+        )}
+      </Modal>
+
+      {/* Delete Card Modal */}
+      <Modal
+        isOpen={deletingCard !== null}
+        onClose={() => setDeletingCard(null)}
+        title="Supprimer la carte"
+        size="sm"
+      >
+        {deletingCard && (
+          <DeleteConfirmModalContent
+            title="Supprimer cette carte ?"
+            message={`La carte "${deletingCard.question.substring(0, 50)}${deletingCard.question.length > 50 ? '...' : ''}" sera définitivement supprimée.`}
+            onConfirm={async () => {
+              if (deletingCard.id) {
+                await db.cards.delete(deletingCard.id)
+              }
+              setDeletingCard(null)
+            }}
+            onCancel={() => setDeletingCard(null)}
+          />
+        )}
+      </Modal>
     </div>
   )
 }
