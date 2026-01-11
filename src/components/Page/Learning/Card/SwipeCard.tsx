@@ -39,7 +39,9 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
   }, [card.id])
 
   useEffect(() => {
-    if (!isFlipped) {
+    if (isFlipped) {
+      document.getElementById('swipe-card-answer')?.focus()
+    } else {
       document.getElementById('swipe-card-question')?.focus()
     }
   }, [isFlipped, card.id])
@@ -53,6 +55,18 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
     }
   }
 
+  const handleAnswerKeyDown = (
+    e: JSX.TargetedKeyboardEvent<HTMLDivElement>,
+  ) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      handleAnswer(false)
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      handleAnswer(true)
+    }
+  }
+
   const handleAnswer = (isCorrect: boolean) => {
     setAnimationClass(isCorrect ? 'answer-correct' : 'answer-incorrect')
     setTimeout(() => onAnswer(card, { isCorrect }), 200)
@@ -62,9 +76,7 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
     <>
       <div
         class={`
-          relative mx-auto flex min-h-[65vh] w-full max-w-3xl flex-col items-center justify-center 
-          rounded-lg bg-surface-card p-8 shadow-lg 
-          transition-all duration-normal hover:shadow-lg
+          learning-card
           ${animationClass}
         `}
       >
@@ -104,10 +116,17 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
             <h3 class="text-center text-xl font-semibold leading-relaxed text-neutral-900 md:text-2xl">
               {card.question}
             </h3>
-            <p class="text-sm text-neutral-400">Appuyez sur Entrée ou cliquez pour voir la réponse</p>
+            <p class="text-sm text-neutral-400">
+              Appuyez sur Entrée ou cliquez pour voir la réponse
+            </p>
           </div>
         ) : (
-          <div class="flex w-full animate-fade-in flex-col items-center gap-8">
+          <div
+            id="swipe-card-answer"
+            tabIndex={0}
+            onKeyDown={handleAnswerKeyDown}
+            class="flex w-full animate-fade-in flex-col items-center gap-8 focus:outline-none"
+          >
             <p class="text-center text-sm text-neutral-500">{card.question}</p>
             <h3 class="text-center text-xl font-semibold leading-relaxed text-brand-600 md:text-2xl">
               {card.answer}
@@ -155,6 +174,12 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
                 Correct
               </button>
             </div>
+            <p class="text-sm text-neutral-400">
+              <kbd class="rounded-md bg-neutral-100 px-2 py-1 text-xs">←</kbd>{' '}
+              Incorrect
+              <span class="mx-2">·</span> Correct{' '}
+              <kbd class="rounded-md bg-neutral-100 px-2 py-1 text-xs">→</kbd>
+            </p>
           </div>
         )}
       </div>
