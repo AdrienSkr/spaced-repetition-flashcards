@@ -39,8 +39,8 @@ const tabs: TabConfig[] = [
   {
     id: 'due',
     label: 'Due Now',
-    color: 'text-error',
-    bgColor: 'bg-error-light',
+    color: 'text-warning-dark',
+    bgColor: 'bg-warning-light',
   },
   {
     id: 'new',
@@ -206,7 +206,7 @@ export function CardsView({ list }: Props) {
                 <div
                   key={card.id}
                   class={`grid grid-cols-[60px_1fr_1fr_120px_100px_80px] gap-4 px-6 py-3 transition-colors duration-fast hover:bg-brand-50 ${
-                    cardIsDue ? 'bg-error-light/30' : ''
+                    cardIsDue ? 'bg-warning-light/50' : ''
                   }`}
                 >
                   <div class="text-sm text-neutral-400">{card.id}</div>
@@ -218,7 +218,7 @@ export function CardsView({ list }: Props) {
                   </div>
                   <div
                     class={`text-sm ${
-                      cardIsDue ? 'font-medium text-error' : 'text-neutral-500'
+                      cardIsDue ? 'font-medium text-warning-dark' : 'text-neutral-500'
                     }`}
                   >
                     {getNextReviewText(card.nextReview || 0)}

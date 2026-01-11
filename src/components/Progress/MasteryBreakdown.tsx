@@ -35,15 +35,15 @@ export function MasteryBreakdown({ counts, total, dueNowCount }: MasteryBreakdow
       </h3>
 
       {/* Due Now - Special highlight */}
-      <div class="mb-4 rounded-lg bg-error-light p-4">
+      <div class="mb-4 rounded-lg bg-warning-light p-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <Icon name="clock" size={20} color="#ef4444" />
-            <span class="font-medium text-error">Due Now</span>
+            <Icon name="clock" size={20} color="#b45309" />
+            <span class="font-medium text-warning-dark">Due Now</span>
           </div>
-          <span class="text-xl font-semibold text-error">{dueNowCount}</span>
+          <span class="text-xl font-semibold text-warning-dark">{dueNowCount}</span>
         </div>
-        <p class="mt-1 text-xs text-error/70">Cards ready for review right now</p>
+        <p class="mt-1 text-xs text-warning-dark/70">Cards ready for review right now</p>
       </div>
 
       <div class="space-y-3">

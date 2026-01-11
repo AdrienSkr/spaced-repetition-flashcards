@@ -45,6 +45,7 @@ export default {
         warning: {
           DEFAULT: '#f59e0b',
           light: '#fef3c7',
+          dark: '#b45309',
         },
         error: {
           DEFAULT: '#ef4444',

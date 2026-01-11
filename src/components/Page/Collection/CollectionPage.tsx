@@ -82,12 +82,12 @@ export function CollectionPage() {
             </div>
             {dueCount > 0 && (
               <div class="flex items-center gap-2">
-                <div class="icon-container-md rounded-lg bg-error-light">
-                  <Icon name="clock" size={20} color="#ef4444" />
+                <div class="icon-container-md rounded-lg bg-warning-light">
+                  <Icon name="clock" size={20} color="#b45309" />
                 </div>
                 <div>
                   <p class="text-sm text-neutral-500">À réviser</p>
-                  <p class="text-lg font-semibold text-error">{dueCount}</p>
+                  <p class="text-lg font-semibold text-warning-dark">{dueCount}</p>
                 </div>
               </div>
             )}
