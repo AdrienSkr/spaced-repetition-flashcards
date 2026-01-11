@@ -65,7 +65,7 @@ export function CollectionPage() {
   }
 
   return (
-    <div class="space-y-6">
+    <div class="animate-fade-in space-y-6 pt-4">
       {/* Header with actions */}
       {isSpecificList && (
         <div class="flex flex-wrap items-center justify-between gap-4">
