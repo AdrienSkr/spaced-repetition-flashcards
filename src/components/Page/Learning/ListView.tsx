@@ -31,7 +31,9 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   const [startTime, setStartTime] = useState<number>(Date.now())
   const [retryQueue, setRetryQueue] = useState<number[]>([])
   // Track reviewed cards in free practice mode (local state, not persisted)
-  const [freePracticeReviewedIds, setFreePracticeReviewedIds] = useState<Set<number>>(new Set())
+  const [freePracticeReviewedIds, setFreePracticeReviewedIds] = useState<
+    Set<number>
+  >(new Set())
   // Days ahead selector state
   const [selectedDaysAhead, setSelectedDaysAhead] = useState<number>(1)
 
@@ -88,7 +90,9 @@ export function ListView({ list, onAddCard }: ListViewProps) {
 
     if (freePracticeMode === 'all') {
       // All cards, excluding already reviewed in this session
-      return cards.filter((card) => card.id && !freePracticeReviewedIds.has(card.id))
+      return cards.filter(
+        (card) => card.id && !freePracticeReviewedIds.has(card.id),
+      )
     }
 
     if (freePracticeMode === 'future') {
@@ -101,7 +105,7 @@ export function ListView({ list, onAddCard }: ListViewProps) {
           !freePracticeReviewedIds.has(card.id) &&
           card.nextReview &&
           card.nextReview > now &&
-          card.nextReview <= futureLimit
+          card.nextReview <= futureLimit,
       )
     }
 
@@ -233,7 +237,10 @@ export function ListView({ list, onAddCard }: ListViewProps) {
     const now = Date.now()
     const futureLimit = now + days * 24 * 60 * 60 * 1000
     return cards.filter(
-      (card) => card.nextReview && card.nextReview > now && card.nextReview <= futureLimit
+      (card) =>
+        card.nextReview &&
+        card.nextReview > now &&
+        card.nextReview <= futureLimit,
     ).length
   }
 
@@ -247,17 +254,18 @@ export function ListView({ list, onAddCard }: ListViewProps) {
         <div class="mb-6 flex size-24 items-center justify-center rounded-full bg-primary-100">
           <Icon name="celebration" size={48} color="#8b5cf6" />
         </div>
-        <h2 class="mb-2 text-2xl font-bold text-gray-900">Practice complete!</h2>
+        <h2 class="mb-2 text-2xl font-bold text-gray-900">
+          Practice complete!
+        </h2>
         <p class="mb-6 max-w-md text-gray-600">
           You've finished your free practice session.
           <span class="mt-2 block text-sm text-gray-500">
-            {freePracticeReviewedIds.size} card{freePracticeReviewedIds.size > 1 ? 's' : ''} reviewed (no progress saved)
+            {freePracticeReviewedIds.size} card
+            {freePracticeReviewedIds.size > 1 ? 's' : ''} reviewed (no progress
+            saved)
           </span>
         </p>
-        <button
-          onClick={stopFreePractice}
-          class="btn-primary"
-        >
+        <button onClick={stopFreePractice} class="btn-primary">
           Back to normal mode
         </button>
       </div>
@@ -282,8 +290,10 @@ export function ListView({ list, onAddCard }: ListViewProps) {
 
         {/* Free practice options */}
         <div class="mt-8 w-full max-w-sm space-y-4">
-          <p class="text-sm font-medium text-gray-500">Want to keep practicing?</p>
-          
+          <p class="text-sm font-medium text-gray-500">
+            Want to keep practicing?
+          </p>
+
           {/* Review all cards */}
           <button
             onClick={() => startFreePractice('all')}
@@ -291,10 +301,22 @@ export function ListView({ list, onAddCard }: ListViewProps) {
           >
             <div>
               <span class="font-medium text-gray-900">Review all cards</span>
-              <span class="ml-2 text-sm text-gray-500">({cards.length} cards)</span>
+              <span class="ml-2 text-sm text-gray-500">
+                ({cards.length} cards)
+              </span>
             </div>
-            <svg class="size-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <svg
+              class="size-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
 
@@ -302,8 +324,12 @@ export function ListView({ list, onAddCard }: ListViewProps) {
           <div class="rounded-lg border border-gray-200 bg-white">
             <div class="flex items-center justify-between px-4 py-3">
               <div>
-                <span class="font-medium text-gray-900">Review upcoming cards</span>
-                <span class="ml-2 text-sm text-gray-500">({getFutureCardsCount(selectedDaysAhead)} cards)</span>
+                <span class="font-medium text-gray-900">
+                  Review upcoming cards
+                </span>
+                <span class="ml-2 text-sm text-gray-500">
+                  ({getFutureCardsCount(selectedDaysAhead)} cards)
+                </span>
               </div>
             </div>
             <div class="border-t border-gray-100 px-4 py-3">
@@ -311,7 +337,11 @@ export function ListView({ list, onAddCard }: ListViewProps) {
                 <span class="text-sm text-gray-600">Next</span>
                 <select
                   value={selectedDaysAhead}
-                  onChange={(e) => setSelectedDaysAhead(Number((e.target as HTMLSelectElement).value))}
+                  onChange={(e) =>
+                    setSelectedDaysAhead(
+                      Number((e.target as HTMLSelectElement).value),
+                    )
+                  }
                   class="rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 >
                   <option value={1}>1 day</option>
@@ -340,7 +370,9 @@ export function ListView({ list, onAddCard }: ListViewProps) {
   }
 
   // Calculate remaining cards based on mode
-  const remainingCount = isFreePractice ? freePracticeCards.length : totalRemaining
+  const remainingCount = isFreePractice
+    ? freePracticeCards.length
+    : totalRemaining
 
   return (
     <div class="animate-fade-in">
@@ -348,15 +380,30 @@ export function ListView({ list, onAddCard }: ListViewProps) {
       {isFreePractice && (
         <div class="mb-4 flex items-center justify-between rounded-lg bg-amber-50 px-4 py-2 text-amber-800">
           <div class="flex items-center gap-2">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span class="text-sm font-medium">
               Free practice mode
-              {freePracticeMode === 'future' && ` (next ${freePracticeDaysAhead} day${freePracticeDaysAhead > 1 ? 's' : ''})`}
+              {freePracticeMode === 'future' &&
+                ` (next ${freePracticeDaysAhead} day${
+                  freePracticeDaysAhead > 1 ? 's' : ''
+                })`}
               {freePracticeMode === 'all' && ' (all cards)'}
             </span>
-            <span class="text-xs text-amber-600">– Progress won't be saved</span>
+            <span class="text-xs text-amber-600">
+              – Progress won't be saved
+            </span>
           </div>
           <button
             onClick={stopFreePractice}
