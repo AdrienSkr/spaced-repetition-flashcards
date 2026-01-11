@@ -41,6 +41,7 @@ export default {
         success: {
           DEFAULT: '#22c55e',
           light: '#dcfce7',
+          dark: '#15803d',
         },
         warning: {
           DEFAULT: '#f59e0b',

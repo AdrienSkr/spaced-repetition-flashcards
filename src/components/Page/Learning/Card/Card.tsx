@@ -121,7 +121,7 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
               <>
                 <div class="icon-container mb-2 rounded-lg bg-success-light p-4">
                   <svg
-                    class="size-10 text-success"
+                    class="size-10 text-success-dark"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -134,13 +134,14 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
                     />
                   </svg>
                 </div>
-                <h4 class="text-2xl font-semibold text-success">{input}</h4>
+                <h4 class="text-2xl font-semibold text-success-dark">{input}</h4>
               </>
             ) : (
               <>
                 <div class="icon-container mb-2 rounded-lg bg-error-light p-4">
                   <svg
-                    class="size-10 text-error"
+                    class="size-10"
+                    style={{ color: '#b91c1c' }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -158,7 +159,7 @@ export function Card({ card, listId, onAnswer, onCardUpdated }: Props) {
                   <h3 class="mb-4 text-xl font-semibold text-neutral-900">
                     {card.answer}
                   </h3>
-                  <p class="text-lg text-error line-through">{input}</p>
+                  <p class="text-lg line-through" style={{ color: '#b91c1c' }}>{input}</p>
                 </div>
               </>
             )}

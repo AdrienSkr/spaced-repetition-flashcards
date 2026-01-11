@@ -135,8 +135,8 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
             <div class="mt-4 flex gap-4">
               <button
                 onClick={() => handleAnswer(false)}
-                class="flex items-center gap-2 rounded-lg bg-error-light px-4 py-2 font-medium text-error 
-                       transition-all duration-fast hover:bg-error hover:text-white active:scale-95"
+                class="flex items-center gap-2 rounded-lg bg-error-light px-4 py-2 font-medium transition-all duration-fast hover:bg-error hover:text-white active:scale-95"
+                style={{ color: '#b91c1c' }}
               >
                 <svg
                   class="size-5"
@@ -155,7 +155,7 @@ export function SwipeCard({ card, listId, onAnswer, onCardUpdated }: Props) {
               </button>
               <button
                 onClick={() => handleAnswer(true)}
-                class="flex items-center gap-2 rounded-lg bg-success-light px-4 py-2 font-medium text-success 
+                class="flex items-center gap-2 rounded-lg bg-success-light px-4 py-2 font-medium text-success-dark 
                        transition-all duration-fast hover:bg-success hover:text-white active:scale-95"
               >
                 <svg

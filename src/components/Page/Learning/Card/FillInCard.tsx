@@ -117,7 +117,8 @@ export function FillInCard({ card, listId, onAnswer, onCardUpdated }: Props) {
         parts.push(
           <span
             key={`blank-${index}`}
-            class={`mx-1 inline-block rounded-md px-2 py-1 font-semibold ${isCorrect ? 'bg-success-light text-success' : 'bg-error-light text-error'}`}
+            class={`mx-1 inline-block rounded-md px-2 py-1 font-semibold ${isCorrect ? 'bg-success-light text-success-dark' : 'bg-error-light'}`}
+            style={!isCorrect ? { color: '#b91c1c' } : undefined}
           >
             {answers[index]}
             {!isCorrect && <span class="ml-2 text-sm font-normal">→ {blank.word}</span>}
