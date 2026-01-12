@@ -5,6 +5,7 @@ import { defineConfig } from 'vitest/config'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/pairWise-Cards/',
+  publicDir: 'public',
   plugins: [preact()],
   build: {
     // Minification avec esbuild (plus rapide que terser)
