@@ -13,6 +13,10 @@ PairWise Cards is a flashcard learning application that uses the **SM-2 spaced r
 
 **Live Demo:** [https://baddsu51.github.io/pairWise-Cards/](https://baddsu51.github.io/pairWise-Cards/)
 
+<div align="center">
+  <img src="docs/images/demo.gif" alt="App Demo" width="500" />
+</div>
+
 ## Motivation
 
 This project was born from a long-standing passion for flashcard applications and spaced repetition learning. As soon as I gained some web development skills, I wanted to build my own flashcard app using Preact.
