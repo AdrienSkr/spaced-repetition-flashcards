@@ -38,31 +38,36 @@ The algorithm for determining which words to hide in Fill-in mode required signi
 ## Features
 
 - **Three Learning Modes**
-- **Typing Mode**: Allows learning by writing the answer to the question. Tolerance levels can be configured for each card list.
-- **Swipe Mode**: Allows for easy card review by giving the power of self-assessment to the user, who can simply swipe left (if they knew it) or right (if they didn't) after flipping the card to see the answer.
-- **Fill-in Mode**: Offers a middle ground between typing and swiping. Swipe mode can give the user a false impression of knowledge. Typing mode can be very time-consuming for reviewing all cards if answers are long. Fill-in mode solves these issues by hiding only important words in an answer using heuristics. The user no longer has to type the whole phrase and benefits from active learning.
+
+  - **Typing Mode**: Allows learning by writing the answer to the question. Tolerance levels can be configured for each card list.
+  - **Swipe Mode**: Allows for easy card review by giving the power of self-assessment to the user, who can simply swipe left (if they knew it) or right (if they didn't) after flipping the card to see the answer.
+  - **Fill-in Mode**: Offers a middle ground between typing and swiping. Swipe mode can give the user a false impression of knowledge. Typing mode can be very time-consuming for reviewing all cards if answers are long. Fill-in mode solves these issues by hiding only important words in an answer using heuristics. The user no longer has to type the whole phrase and benefits from active learning.
 
 - **SM-2 Spaced Repetition Algorithm**
-- A scientifically proven algorithm for optimal memory retention.
-- Automatically schedules card reviews.
-- Adapts review intervals based on your performance.
+
+  - A scientifically proven algorithm for optimal memory retention.
+  - Automatically schedules card reviews.
+  - Adapts review intervals based on your performance.
 
 - **Deck Management**
-- The application allows you to create and organize multiple lists (decks).
-- You can import multiple cards at once from CSV, JSON, or TSV files.
-- Manual typing tolerance levels are configurable for each deck.
+
+  - The application allows you to create and organize multiple lists (decks).
+  - You can import multiple cards at once from CSV, JSON, or TSV files.
+  - Manual typing tolerance levels are configurable for each deck.
 
 - **Progress Tracking**
-- A card can have several states throughout the learning cycle: New, Learning, Reviewing, and Mastered.
-- The progress page shows statistics on deck cards, such as the total count, number of cards per state, mastery percentage, and even the average number of reviews per card.
+
+  - A card can have several states throughout the learning cycle: New, Learning, Reviewing, and Mastered.
+  - The progress page shows statistics on deck cards, such as the total count, number of cards per state, mastery percentage, and even the average number of reviews per card.
 
 - **Free Training Mode**
-- When all cards made available by the SM-2 algorithm have been reviewed, you can continue reviewing cards without affecting progress.
-- Free review can be done on all cards in a deck or on upcoming cards (from 1 to 30 days in advance).
+
+  - When all cards made available by the SM-2 algorithm have been reviewed, you can continue reviewing cards without affecting progress.
+  - Free review can be done on all cards in a deck or on upcoming cards (from 1 to 30 days in advance).
 
 - **Modern UI/UX**
-- The design is intended to be simple and strives to be adapted for all devices (mobile and desktop).
-- Navigation within the app is possible via keyboard. You can review your cards without touching the mouse.
+  - The design is intended to be simple and strives to be adapted for all devices (mobile and desktop).
+  - Navigation within the app is possible via keyboard. You can review your cards without touching the mouse.
 
 ## Quick Start
 
