@@ -12,7 +12,7 @@
 
 PairWise Cards est une application d'apprentissage par flashcards qui implémente l'**algorithme de répétition espacée SM-2**. L'objectif est d'aider les utilisateurs à mémoriser des informations de manière durable et efficace. L'application planifie automatiquement les révisions à des intervalles calculés par l'algorithme en fonction des réponses données pendant l'entraînement.
 
-**Demo live :** [https://baddsu51.github.io/pairWise-Cards/](https://adrienskr.github.io/spaced-repetition-flashcards/)
+**Demo live :** [https://adrienskr.github.io/spaced-repetition-flashcards/](https://adrienskr.github.io/spaced-repetition-flashcards/)
 
 ![Demo de l'application](docs/images/demo.gif)
 
